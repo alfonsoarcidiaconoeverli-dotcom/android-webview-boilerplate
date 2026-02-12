@@ -1,13 +1,13 @@
 plugins {
-    id "com.android.application"
+    id("com.android.application")
 }
 
 android {
-    namespace "com.example.helloworld"
+    namespace "com.wordstudio.wrapper"
     compileSdk 34
 
     defaultConfig {
-        applicationId "com.example.helloworld"
+        applicationId "com.wordstudio.wrapper"
         minSdk 24
         targetSdk 34
         versionCode 1
@@ -20,6 +20,9 @@ android {
             shrinkResources false
             proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
         }
+        debug {
+            minifyEnabled false
+        }
     }
 
     compileOptions {
@@ -30,5 +33,4 @@ android {
 
 dependencies {
     implementation "androidx.appcompat:appcompat:1.7.0"
-    implementation "androidx.core:core-ktx:1.13.1"
 }
