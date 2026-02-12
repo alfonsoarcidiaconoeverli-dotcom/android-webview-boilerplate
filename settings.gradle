@@ -1,1 +1,2 @@
-include ':app'
+rootProject.name = "android-webview-boilerplate"
+include(":app")
