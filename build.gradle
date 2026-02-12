@@ -1,5 +1,3 @@
-// Top-level build file (updated for modern Gradle + Android)
-
 buildscript {
     repositories {
         google()
