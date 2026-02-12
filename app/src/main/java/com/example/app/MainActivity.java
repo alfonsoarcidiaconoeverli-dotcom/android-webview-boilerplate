@@ -1,5 +1,6 @@
-package com.example.app;
+package com.wordstudio.wrapper;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -9,33 +10,35 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
 
-    private WebView mWebView;
+    private WebView webView;
 
+    @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mWebView = findViewById(R.id.activity_main_webview);
+        webView = findViewById(R.id.activity_main_webview);
 
-        // Keep everything inside WebView
-        mWebView.setWebViewClient(new WebViewClient());
+        webView.setWebViewClient(new WebViewClient());
 
-        // Enable modern WebView features
-        WebSettings webSettings = mWebView.getSettings();
-        webSettings.setJavaScriptEnabled(true);
-        webSettings.setDomStorageEnabled(true);
-        webSettings.setAllowFileAccess(true);
-        webSettings.setAllowContentAccess(true);
+        WebSettings s = webView.getSettings();
+        s.setJavaScriptEnabled(true);
+        s.setDomStorageEnabled(true);
+        s.setAllowFileAccess(true);
+        s.setAllowContentAccess(true);
 
-        // Load your local index.html
-        mWebView.loadUrl("file:///android_asset/www/index.html");
+        // ✅ Carica il tuo index locale:
+        webView.loadUrl("file:///android_asset/www/index.html");
+
+        // Se invece vuoi URL remoto, usa questo:
+        // webView.loadUrl("https://tuosito.com");
     }
 
     @Override
     public void onBackPressed() {
-        if (mWebView.canGoBack()) {
-            mWebView.goBack();
+        if (webView != null && webView.canGoBack()) {
+            webView.goBack();
         } else {
             super.onBackPressed();
         }
