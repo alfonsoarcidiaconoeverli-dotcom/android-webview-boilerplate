@@ -1,23 +1,131 @@
-<!DOCTYPE html>
-<html>
-	<head>
-		<title>Hello wrold</title>
-		<style>
-			body p span{
-				font-family:monospace;
-				font-weight:bold;
-			}
-		</style>
-	</head>
-	<body>
-		<h1>
-			Hello wrold
-		</h1>
-		<p>
-			Hey! I am a file called <span>index.html</span>, located in your Android Studio project in a folder called <span>app/src/main/assets/www</span>.
-		</p>
-		<p>
-			Replace me with your cool web app. Try and make as much of it as local as possible. Network requests are supported, but remember to build in some good offline behaviour.
-		</p>
-	</body>
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WordStudio Pro</title>
+
+<style>
+body{
+    margin:0;
+    font-family: Calibri, Arial, sans-serif;
+    background:#f3f5f7;
+}
+
+.topbar{
+    background:#ffffff;
+    padding:10px;
+    display:flex;
+    gap:8px;
+    overflow-x:auto;
+    border-bottom:1px solid #ddd;
+}
+
+button, select, input[type="number"]{
+    border:1px solid #ccc;
+    border-radius:8px;
+    padding:6px 8px;
+    font-weight:600;
+    background:white;
+}
+
+button{
+    cursor:pointer;
+}
+
+.editor-wrapper{
+    display:flex;
+    justify-content:center;
+    padding:15px;
+}
+
+.editor{
+    background:white;
+    width:100%;
+    max-width:900px;
+    min-height:80vh;
+    padding:25px;
+    border-radius:10px;
+    box-shadow:0 8px 20px rgba(0,0,0,0.08);
+    outline:none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="topbar">
+
+<select id="font">
+<option value="Calibri">Calibri</option>
+<option value="Times New Roman">Times New Roman</option>
+<option value="Georgia">Georgia</option>
+<option value="Arial">Arial</option>
+<option value="Courier New">Courier</option>
+</select>
+
+<input type="number" id="size" value="16" min="8" max="72">
+
+<button onclick="cmd('bold')"><b>B</b></button>
+<button onclick="cmd('italic')"><i>I</i></button>
+<button onclick="cmd('underline')"><u>U</u></button>
+
+<button onclick="cmd('justifyLeft')">⬅</button>
+<button onclick="cmd('justifyCenter')">⬌</button>
+<button onclick="cmd('justifyRight')">➡</button>
+
+<button onclick="printDoc()">🖨</button>
+<button onclick="saveTxt()">TXT</button>
+<button onclick="saveWord()">WORD</button>
+
+</div>
+
+<div class="editor-wrapper">
+<div id="editor" class="editor" contenteditable="true">
+Scrivi qui...
+</div>
+</div>
+
+<script>
+const editor = document.getElementById("editor");
+
+function cmd(command){
+    document.execCommand(command, false, null);
+}
+
+document.getElementById("font").addEventListener("change", e=>{
+    document.execCommand("fontName", false, e.target.value);
+});
+
+document.getElementById("size").addEventListener("change", e=>{
+    let size = e.target.value;
+    editor.style.fontSize = size + "px";
+});
+
+function printDoc(){
+    window.print();
+}
+
+function saveTxt(){
+    const blob = new Blob([editor.innerText], {type:"text/plain"});
+    download(blob, "Documento.txt");
+}
+
+function saveWord(){
+    const html = `
+    <html><head><meta charset="utf-8"></head>
+    <body>${editor.innerHTML}</body></html>`;
+    const blob = new Blob([html], {type:"application/msword"});
+    download(blob, "Documento.doc");
+}
+
+function download(blob, filename){
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = filename;
+    a.click();
+}
+</script>
+
+</body>
 </html>
