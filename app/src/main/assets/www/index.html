@@ -1,131 +1,550 @@
 <!doctype html>
 <html lang="it">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>WordStudio Pro</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>WordStudio Pro — Editor</title>
+  <meta name="theme-color" content="#ffffff" />
+  <style>
+    :root{
+      --bg:#f3f5f7;
+      --paper:#ffffff;
+      --ink:#111827;
+      --muted:#6b7280;
+      --line:#d1d5db;
+      --line2:#e5e7eb;
+      --blue:#2563eb;
+      --blue2:#1d4ed8;
+      --shadow: 0 10px 30px rgba(17,24,39,.12);
+      --ui: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      --doc: "Calibri", "Segoe UI", Roboto, Arial, sans-serif;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;font-family:var(--ui);color:var(--ink);background:var(--bg);}
 
-<style>
-body{
-    margin:0;
-    font-family: Calibri, Arial, sans-serif;
-    background:#f3f5f7;
-}
+    .app{height:100%;display:flex;flex-direction:column;}
+    .topbar{position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid var(--line2);}
+    .topbar-inner{
+      max-width:1180px;margin:0 auto;
+      padding:8px 10px 6px;
+      display:flex;align-items:center;gap:8px;
+    }
+    .logo{
+      width:30px;height:30px;border-radius:9px;
+      background: linear-gradient(135deg, var(--blue), var(--blue2));
+      box-shadow: 0 10px 18px rgba(37,99,235,.18);
+      display:flex;align-items:center;justify-content:center;
+      color:#fff;font-weight:900;user-select:none;flex:0 0 auto;
+      font-size:14px;
+    }
 
-.topbar{
-    background:#ffffff;
-    padding:10px;
-    display:flex;
-    gap:8px;
-    overflow-x:auto;
-    border-bottom:1px solid #ddd;
-}
+    .docmeta{display:flex;flex-direction:column;min-width:0;flex:1 1 auto;}
+    .docname{display:flex;align-items:center;gap:8px;min-width:0;}
+    .docname input{
+      width:100%;min-width:0;border:1px solid var(--line);border-radius:10px;
+      padding:7px 9px;font:800 12px var(--ui);outline:none;background:#fff;
+    }
+    .docname input:focus{border-color: rgba(37,99,235,.55);box-shadow:0 0 0 3px rgba(37,99,235,.14);}
+    .sub{
+      margin-top:4px;display:flex;gap:10px;flex-wrap:wrap;color:var(--muted);
+      font:800 11px var(--ui);
+    }
+    .sub span{display:inline-flex;align-items:center;gap:6px;}
+    .dot{width:7px;height:7px;border-radius:999px;background:#10b981;display:inline-block;}
+    .dot.off{background:#f59e0b;}
 
-button, select, input[type="number"]{
-    border:1px solid #ccc;
-    border-radius:8px;
-    padding:6px 8px;
-    font-weight:600;
-    background:white;
-}
+    .actions{
+      display:flex;gap:6px;flex:0 0 auto;align-items:center;
+      flex-wrap:wrap;justify-content:flex-end;
+    }
+    .btn{
+      border:1px solid var(--line);background:#fff;color:var(--ink);
+      border-radius:10px;padding:7px 8px;font:900 12px var(--ui);
+      cursor:pointer;user-select:none;display:inline-flex;align-items:center;gap:8px;white-space:nowrap;
+    }
+    .btn:active{transform:scale(.99);}
+    .btn.primary{border-color: rgba(37,99,235,.45);background: rgba(37,99,235,.10);color:#0b2b8b;}
+    .btn.danger{border-color: rgba(239,68,68,.35);background: rgba(239,68,68,.08);color:#991b1b;}
+    .btn.ghost{border-color:transparent;background:transparent;}
+    .kbd{font:900 11px var(--mono);color:var(--muted);padding:2px 6px;border:1px solid var(--line2);border-radius:8px;background:#fff;}
 
-button{
-    cursor:pointer;
-}
+    /* Ribbon */
+    .ribbon{border-top:1px solid var(--line2);padding:6px 10px 8px;}
+    .ribbon-inner{
+      max-width:1180px;margin:0 auto;
+      display:flex;flex-wrap:wrap;gap:8px;align-items:center;
+    }
+    .group{
+      display:flex;gap:6px;align-items:center;padding:6px;border:1px solid var(--line2);
+      border-radius:12px;background:#fff;flex-wrap:wrap;
+    }
+    .group-title{font:900 10px var(--ui);color:var(--muted);padding:0 6px 0 2px;letter-spacing:.2px;}
+    .tool{
+      border:1px solid var(--line);background:#fff;border-radius:10px;
+      padding:7px 8px;font:900 12px var(--ui);
+      cursor:pointer;user-select:none;min-width:38px;display:inline-flex;align-items:center;justify-content:center;gap:6px;
+    }
+    .tool.active{border-color: rgba(37,99,235,.55);background: rgba(37,99,235,.10);color:#0b2b8b;}
+    .tool:active{transform:scale(.99);}
+    .select,.input{
+      border:1px solid var(--line);background:#fff;border-radius:10px;padding:7px 8px;font:900 12px var(--ui);
+      outline:none;cursor:pointer;
+    }
+    .input{cursor:text;width:60px;text-align:center;}
+    .color{width:34px;height:32px;border-radius:10px;border:1px solid var(--line);background:#fff;padding:0;cursor:pointer;}
+    .sep{width:1px;height:32px;background:var(--line2);margin:0 2px;}
 
-.editor-wrapper{
-    display:flex;
-    justify-content:center;
-    padding:15px;
-}
+    .ribbon-collapsed .ribbon{display:none;}
 
-.editor{
-    background:white;
-    width:100%;
-    max-width:900px;
-    min-height:80vh;
-    padding:25px;
-    border-radius:10px;
-    box-shadow:0 8px 20px rgba(0,0,0,0.08);
-    outline:none;
-}
-</style>
+    /* Main */
+    .main{
+      flex:1 1 auto;display:flex;justify-content:center;
+      padding:12px 12px 16px;
+      overflow:auto;-webkit-overflow-scrolling:touch;
+    }
+    .page{
+      width:min(900px, calc(100vw - 24px));
+      background:var(--paper);
+      border:1px solid var(--line2);
+      border-radius:16px;
+      box-shadow:var(--shadow);
+      padding:26px 22px;
+    }
+
+    /* Editor */
+    #editor{
+      outline:none;
+      min-height:70vh;
+      font-family: var(--doc);
+      font-size: 16px;
+      line-height: 1.7;
+      color: var(--ink);
+    }
+    #editor:empty:before{
+      content: attr(data-placeholder);
+      color: #9ca3af;
+      font-weight: 700;
+    }
+    #editor h1{font-size:28px;margin:10px 0 8px;}
+    #editor h2{font-size:22px;margin:10px 0 6px;}
+    #editor p{margin:8px 0;}
+    #editor blockquote{
+      margin:10px 0;padding:10px 12px;border-left:4px solid rgba(37,99,235,.35);
+      background:#f8fafc;border-radius:10px;color:#334155;font-style:italic;
+    }
+    #editor code{
+      font-family: var(--mono);font-size: 13px;background:#f1f5f9;border:1px solid #e2e8f0;
+      padding:2px 6px;border-radius:8px;
+    }
+
+    .status{
+      max-width:1180px;margin:0 auto;padding:10px 12px 14px;color:var(--muted);
+      font:900 12px var(--ui);
+      display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;
+    }
+
+    .toast{
+      position:fixed;left:50%;transform:translateX(-50%);bottom:18px;background:#111827;color:#fff;
+      padding:10px 12px;border-radius:12px;font:900 12px var(--ui);
+      opacity:0;pointer-events:none;transition:opacity .18s ease, transform .18s ease;
+      box-shadow:0 12px 30px rgba(17,24,39,.25);z-index:80;
+    }
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(-4px);}
+
+    /* Modal */
+    .modal-backdrop{
+      position:fixed; inset:0;
+      background: rgba(17,24,39,.45);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:16px;
+      z-index:90;
+    }
+    .modal-backdrop.show{display:flex;}
+    .modal{
+      width:min(560px, 100%);
+      background:#fff;
+      border-radius:16px;
+      border:1px solid var(--line2);
+      box-shadow: 0 18px 60px rgba(17,24,39,.25);
+      overflow:hidden;
+    }
+    .modal-h{
+      padding:12px 14px;
+      border-bottom:1px solid var(--line2);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      font:900 13px var(--ui);
+    }
+    .modal-b{
+      padding:14px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+    .modal-f{
+      padding:12px 14px;
+      border-top:1px solid var(--line2);
+      display:flex;
+      gap:10px;
+      justify-content:flex-end;
+      flex-wrap:wrap;
+    }
+    .row{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+    .row label{font:900 12px var(--ui); color: var(--muted);}
+    .row input, .row select{
+      flex:1 1 240px;
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:10px 10px;
+      font:900 13px var(--ui);
+      outline:none;
+      background:#fff;
+    }
+    .row input:focus, .row select:focus{
+      border-color: rgba(37,99,235,.55);
+      box-shadow: 0 0 0 3px rgba(37,99,235,.14);
+    }
+    .hint{
+      color: var(--muted);
+      font:800 12px/1.4 var(--ui);
+    }
+
+    /* Docs list */
+    .docs{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      max-height:46vh;
+      overflow:auto;
+      border:1px solid var(--line2);
+      border-radius:14px;
+      padding:8px;
+      background:#fafafa;
+    }
+    .docitem{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      padding:10px 10px;
+      border:1px solid var(--line2);
+      border-radius:12px;
+      background:#fff;
+    }
+    .docleft{min-width:0; display:flex; flex-direction:column; gap:3px;}
+    .docleft b{font:950 13px var(--ui); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:280px;}
+    .docleft small{color:var(--muted); font:800 11px var(--ui);}
+    .docright{display:flex; gap:6px; flex-wrap:wrap; justify-content:flex-end;}
+    .pill{
+      font:900 11px var(--ui);
+      color:#0b2b8b;
+      border:1px solid rgba(37,99,235,.35);
+      background: rgba(37,99,235,.08);
+      padding:4px 8px;border-radius:999px;
+    }
+
+    /* Mobile */
+    @media (max-width: 640px){
+      .topbar-inner{flex-wrap:wrap;align-items:flex-start;}
+      .docmeta{ flex: 1 1 100%; }
+      .sub{ display:none; }
+      .actions{
+        flex: 1 1 100%;
+        justify-content:flex-start;
+        flex-wrap:nowrap;
+        overflow-x:auto;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom:2px;
+      }
+      .actions::-webkit-scrollbar{ height:0; }
+      .btn .kbd{ display:none; }
+      .btn span.txt{ display:none; }
+
+      .ribbon-inner{
+        flex-wrap:nowrap;
+        overflow-x:auto;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom:2px;
+      }
+      .ribbon-inner::-webkit-scrollbar{ height:0; }
+      .group{ flex-wrap:nowrap; white-space:nowrap; }
+      .group-title{ display:none; }
+      .select{ max-width: 220px; }
+      .page{ width: calc(100vw - 24px); }
+      .docleft b{max-width:200px;}
+    }
+  </style>
 </head>
-
 <body>
+<div class="app" id="appRoot">
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="logo" aria-hidden="true">W</div>
 
-<div class="topbar">
+      <div class="docmeta">
+        <div class="docname">
+          <input id="filename" value="Documento" maxlength="60" />
+        </div>
+        <div class="sub">
+          <span><i class="dot" id="autosaveDot"></i> Autosalvataggio</span>
+          <span>Ultimo salvataggio: <b id="lastSave">—</b></span>
+          <span class="pill" id="docIdPill">—</span>
+        </div>
+      </div>
 
-<select id="font">
-<option value="Calibri">Calibri</option>
-<option value="Times New Roman">Times New Roman</option>
-<option value="Georgia">Georgia</option>
-<option value="Arial">Arial</option>
-<option value="Courier New">Courier</option>
-</select>
+      <div class="actions">
+        <button class="btn" id="docsBtn" title="Documenti (Apri / Nuovo)">📚 <span class="txt">Documenti</span></button>
+        <button class="btn" id="ribbonToggle" title="Mostra/Nascondi barra strumenti">▾ <span class="txt">Barra</span></button>
 
-<input type="number" id="size" value="16" min="8" max="72">
+        <button class="btn" id="printBtn" title="Stampa / Salva PDF">🖨️ <span class="txt">Stampa</span></button>
+        <button class="btn" id="saveBtn" title="Salva / Esporta (Ctrl+S)">💾 <span class="txt">Salva</span> <span class="kbd">Ctrl+S</span></button>
+        <button class="btn primary" id="exportWordBtn" title="Esporta Word (.doc)">⬇️ <span class="txt">Word</span></button>
+        <button class="btn" id="exportTxtBtn" title="Esporta TXT">📄 <span class="txt">TXT</span></button>
+        <button class="btn danger" id="clearBtn" title="Svuota documento">🗑️ <span class="txt">Reset</span></button>
+      </div>
+    </div>
 
-<button onclick="cmd('bold')"><b>B</b></button>
-<button onclick="cmd('italic')"><i>I</i></button>
-<button onclick="cmd('underline')"><u>U</u></button>
+    <div class="ribbon" id="ribbon">
+      <div class="ribbon-inner">
+        <div class="group" aria-label="Font">
+          <span class="group-title">Font</span>
+          <select class="select" id="fontSelect" title="Tipo di scrittura">
+            <option value="Calibri" selected>Calibri</option>
+            <option value="Times New Roman">Times New Roman</option>
+            <option value="Georgia">Georgia</option>
+            <option value="Garamond">Garamond</option>
+            <option value="Arial">Arial</option>
+            <option value="Courier New">Courier New</option>
+          </select>
 
-<button onclick="cmd('justifyLeft')">⬅</button>
-<button onclick="cmd('justifyCenter')">⬌</button>
-<button onclick="cmd('justifyRight')">➡</button>
+          <input class="input" id="fontSize" type="number" min="8" max="72" step="1" value="16" title="Dimensione font" />
+          <button class="tool" id="decFont" title="Riduci font">A−</button>
+          <button class="tool" id="incFont" title="Aumenta font">A+</button>
 
-<button onclick="printDoc()">🖨</button>
-<button onclick="saveTxt()">TXT</button>
-<button onclick="saveWord()">WORD</button>
+          <span class="sep" aria-hidden="true"></span>
+          <label class="tool" title="Colore testo" style="padding:6px 8px;">
+            🎨 <input id="colorPicker" class="color" type="color" value="#111827" aria-label="Colore testo" />
+          </label>
 
+          <select class="select" id="lineHeight" title="Interlinea">
+            <option value="1.15">1.15</option>
+            <option value="1.3">1.3</option>
+            <option value="1.5">1.5</option>
+            <option value="1.7" selected>1.7</option>
+            <option value="2.0">2.0</option>
+          </select>
+        </div>
+
+        <div class="group" aria-label="Stile testo">
+          <span class="group-title">Stile</span>
+          <button class="tool" data-cmd="bold" title="Grassetto (Ctrl+B)">B</button>
+          <button class="tool" data-cmd="italic" title="Corsivo (Ctrl+I)"><i>I</i></button>
+          <button class="tool" data-cmd="underline" title="Sottolineato (Ctrl+U)"><u>U</u></button>
+          <button class="tool" data-cmd="strikeThrough" title="Barrato">S̶</button>
+          <button class="tool" data-style="code" title="Monospace">{"{}"}</button>
+        </div>
+
+        <div class="group" aria-label="Paragrafi">
+          <span class="group-title">Paragrafo</span>
+          <select class="select" id="blockSelect" title="Stile paragrafo">
+            <option value="p">Paragrafo</option>
+            <option value="h1">Titolo 1</option>
+            <option value="h2">Titolo 2</option>
+            <option value="blockquote">Citazione</option>
+          </select>
+          <button class="tool" data-cmd="insertUnorderedList" title="Elenco puntato">•</button>
+          <button class="tool" data-cmd="insertOrderedList" title="Elenco numerato">1.</button>
+          <button class="tool" data-cmd="outdent" title="Riduci rientro">⟵</button>
+          <button class="tool" data-cmd="indent" title="Aumenta rientro">⟶</button>
+        </div>
+
+        <div class="group" aria-label="Allineamento">
+          <span class="group-title">Allinea</span>
+          <button class="tool" data-cmd="justifyLeft" title="Allinea a sinistra">⬅️</button>
+          <button class="tool" data-cmd="justifyCenter" title="Centra">↔️</button>
+          <button class="tool" data-cmd="justifyRight" title="Allinea a destra">➡️</button>
+          <button class="tool" data-cmd="justifyFull" title="Giustifica">☰</button>
+        </div>
+
+        <div class="group" aria-label="Modifica">
+          <span class="group-title">Modifica</span>
+          <button class="tool" id="undo" title="Annulla (Ctrl+Z)">↩️</button>
+          <button class="tool" id="redo" title="Ripeti (Ctrl+Y)">↪️</button>
+          <button class="tool" id="selectAll" title="Seleziona tutto (Ctrl+A)">⎘</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="page">
+      <div id="editor" contenteditable="true" spellcheck="true" data-placeholder="Scrivi qui..."></div>
+    </div>
+  </div>
+
+  <div class="status">
+    <div>Parole: <b id="words">0</b> • Caratteri: <b id="chars">0</b></div>
+    <div>Tip: <span class="kbd">Ctrl+B</span> <span class="kbd">Ctrl+I</span> <span class="kbd">Ctrl+U</span> <span class="kbd">Ctrl+S</span></div>
+  </div>
 </div>
 
-<div class="editor-wrapper">
-<div id="editor" class="editor" contenteditable="true">
-Scrivi qui...
+<div class="toast" id="toast">Salvato</div>
+
+<!-- SAVE/EXPORT MODAL -->
+<div class="modal-backdrop" id="saveModal">
+  <div class="modal" role="dialog" aria-modal="true" aria-label="Salva / Esporta">
+    <div class="modal-h">
+      <span>Salva / Esporta</span>
+      <button class="btn" id="closeSaveModal">✕</button>
+    </div>
+    <div class="modal-b">
+      <div class="row">
+        <label for="saveName">Nome file</label>
+        <input id="saveName" maxlength="60" />
+      </div>
+      <div class="row">
+        <label for="saveType">Formato</label>
+        <select id="saveType">
+          <option value="project">Progetto WordStudio (.wsp)</option>
+          <option value="word" selected>Microsoft Word (.doc)</option>
+          <option value="txt">Testo (.txt)</option>
+          <option value="html">Pagina HTML (.html)</option>
+        </select>
+      </div>
+      <div class="hint">
+        Su molti Android non esiste la “finestra salva”: il file va in <b>Download</b>.
+        Se il browser supporta il salvataggio nativo, lo useremo automaticamente.
+      </div>
+    </div>
+    <div class="modal-f">
+      <button class="btn" id="saveCancel">Annulla</button>
+      <button class="btn primary" id="saveConfirm">Salva</button>
+    </div>
+  </div>
 </div>
+
+<!-- DOCS MODAL -->
+<div class="modal-backdrop" id="docsModal">
+  <div class="modal" role="dialog" aria-modal="true" aria-label="Documenti">
+    <div class="modal-h">
+      <span>Documenti</span>
+      <button class="btn" id="closeDocsModal">✕</button>
+    </div>
+    <div class="modal-b">
+      <div class="row">
+        <button class="btn primary" id="newDocBtn">➕ Nuovo</button>
+        <button class="btn" id="importBtn">📥 Importa</button>
+        <input id="importInput" type="file" accept=".wsp,.json,.html,.txt" style="display:none"/>
+      </div>
+
+      <div class="docs" id="docsList"></div>
+
+      <div class="hint">
+        I documenti sono salvati dentro l’app (localStorage). Se disinstalli l’app o cancelli dati, spariscono: usa <b>Esporta</b> per sicurezza.
+      </div>
+    </div>
+    <div class="modal-f">
+      <button class="btn" id="docsClose">Chiudi</button>
+    </div>
+  </div>
 </div>
 
 <script>
-const editor = document.getElementById("editor");
+(() => {
+  const $ = s => document.querySelector(s);
 
-function cmd(command){
-    document.execCommand(command, false, null);
-}
+  const appRoot = $("#appRoot");
+  const editor = $("#editor");
+  const filename = $("#filename");
+  const wordsEl = $("#words");
+  const charsEl = $("#chars");
+  const lastSaveEl = $("#lastSave");
+  const toast = $("#toast");
 
-document.getElementById("font").addEventListener("change", e=>{
-    document.execCommand("fontName", false, e.target.value);
-});
+  const autosaveDot = $("#autosaveDot");
+  const docIdPill = $("#docIdPill");
 
-document.getElementById("size").addEventListener("change", e=>{
-    let size = e.target.value;
-    editor.style.fontSize = size + "px";
-});
+  const docsBtn = $("#docsBtn");
+  const ribbonToggle = $("#ribbonToggle");
+  const printBtn = $("#printBtn");
+  const saveBtn = $("#saveBtn");
+  const exportWordBtn = $("#exportWordBtn");
+  const exportTxtBtn = $("#exportTxtBtn");
+  const clearBtn = $("#clearBtn");
 
-function printDoc(){
-    window.print();
-}
+  const undoBtn = $("#undo");
+  const redoBtn = $("#redo");
+  const selectAllBtn = $("#selectAll");
+  const blockSelect = $("#blockSelect");
 
-function saveTxt(){
-    const blob = new Blob([editor.innerText], {type:"text/plain"});
-    download(blob, "Documento.txt");
-}
+  const fontSelect = $("#fontSelect");
+  const fontSize = $("#fontSize");
+  const decFont = $("#decFont");
+  const incFont = $("#incFont");
+  const colorPicker = $("#colorPicker");
+  const lineHeight = $("#lineHeight");
 
-function saveWord(){
-    const html = `
-    <html><head><meta charset="utf-8"></head>
-    <body>${editor.innerHTML}</body></html>`;
-    const blob = new Blob([html], {type:"application/msword"});
-    download(blob, "Documento.doc");
-}
+  const saveModal = $("#saveModal");
+  const closeSaveModal = $("#closeSaveModal");
+  const saveCancel = $("#saveCancel");
+  const saveConfirm = $("#saveConfirm");
+  const saveName = $("#saveName");
+  const saveType = $("#saveType");
 
-function download(blob, filename){
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = filename;
-    a.click();
-}
-</script>
+  const docsModal = $("#docsModal");
+  const closeDocsModal = $("#closeDocsModal");
+  const docsClose = $("#docsClose");
+  const docsList = $("#docsList");
+  const newDocBtn = $("#newDocBtn");
+  const importBtn = $("#importBtn");
+  const importInput = $("#importInput");
 
-</body>
-</html>
+  // Storage schema
+  const KEY_DB = "wordstudio_db_v1";
+  const KEY_UI = "wordstudio_ui_v1";
+
+  let state = {
+    currentId: null,
+    autosave: true,
+    dirty: false,
+    saveTimer: null,
+    toastTimer: null
+  };
+
+  function uid(){
+    return "doc_" + Math.random().toString(16).slice(2) + "_" + Date.now().toString(16);
+  }
+  function nowISO(){ return new Date().toISOString(); }
+  function nowTime(){
+    const d = new Date();
+    return d.toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"});
+  }
+
+  function dbLoad(){
+    try{
+      const raw = localStorage.getItem(KEY_DB);
+      if(!raw) return { currentId:null, docs:{} };
+      const db = JSON.parse(raw);
+      if(!db.docs) db.docs = {};
+      return db;
+    }catch(e){
+      return { currentId:null, docs:{} };
+    }
+  }
+  function dbSave(db){
+    localStorage.setItem(KEY_DB, JSON.stringify(db));
+  }
+
+  function uiLoad(){
+    try{
+      const raw = localStorage.getItem(KEY_UI);
+      if(!raw) return { ribbonCollapsed:false };
+  
