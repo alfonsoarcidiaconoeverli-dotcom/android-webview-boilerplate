@@ -2,195 +2,137 @@
 <html lang="it">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#ffffff" />
   <title>WordStudio</title>
+
   <style>
     :root{
       --bg:#ffffff;
-      --card:#ffffff;
-      --text:#111827;
+      --panel:#ffffff;
+      --soft:#f7f7f8;
+      --line:#e6e6e6;
       --muted:#6b7280;
-      --line:#e5e7eb;
-      --blue:#2563eb;
-      --blue2:#1d4ed8;
-      --red:#dc2626;
-      --shadow:0 10px 30px rgba(17,24,39,.08);
-      --r:22px;
+      --text:#111827;
+      --primary:#2563eb;
+      --danger:#dc2626;
+
+      --shadow:0 10px 26px rgba(0,0,0,.06);
+      --shadow2:0 4px 14px rgba(0,0,0,.05);
+
+      --safeTop: env(safe-area-inset-top, 0px);
+      --safeBot: env(safe-area-inset-bottom, 0px);
+      --kbPad: 0px;
     }
 
-    *{ box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
+    *{ box-sizing:border-box; }
     html,body{ height:100%; }
     body{
       margin:0;
-      font-family: system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
-      background: #f6f7fb;
+      background:var(--bg);
       color:var(--text);
-      overflow-x:hidden;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      -webkit-font-smoothing:antialiased;
+      overscroll-behavior:none;
+      touch-action:manipulation;
     }
 
-    /* App shell */
     .app{
-      max-width: 980px;
-      margin: 0 auto;
-      padding: 14px 14px calc(14px + env(safe-area-inset-bottom));
+      min-height:100%;
+      display:flex;
+      flex-direction:column;
+      background:var(--bg);
     }
 
-    /* Top header (solo estetica, NON comandi) */
-    .top{
+    /* TOPBAR: SOLO BRAND + NOME, ZERO BOTTONI */
+    .topbar{
+      position:sticky;
+      top:0;
+      z-index:30;
+      background:var(--panel);
+      border-bottom:1px solid var(--line);
+      padding: calc(10px + var(--safeTop)) 12px 10px;
+    }
+    .topbar-inner{
+      max-width:1100px;
+      margin:0 auto;
       display:flex;
       align-items:center;
       gap:12px;
-      padding: 10px 10px;
-    }
-    .logo{
-      width:44px;height:44px;border-radius:14px;
-      background: linear-gradient(180deg,#2b7cff,#1e4fd6);
-      display:flex;align-items:center;justify-content:center;
-      box-shadow: 0 10px 20px rgba(37,99,235,.22);
-      flex: 0 0 auto;
-    }
-    .logo span{
-      color:#fff;font-weight:900;font-size:18px;letter-spacing:.4px;
     }
     .brand{
-      line-height:1.05;
-      min-width: 140px;
+      display:flex; align-items:center; gap:10px;
+      user-select:none;
+      min-width:0;
     }
-    .brand .name{ font-size:20px;font-weight:900; }
-    .brand .sub{ font-size:12px;color:var(--muted);font-weight:700; margin-top:2px; }
+    .logo{
+      width:36px;height:36px;border-radius:10px;
+      background:var(--primary);
+      display:grid;place-items:center;
+      color:#fff;font-weight:900;
+      box-shadow: var(--shadow2);
+      flex:0 0 auto;
+    }
+    .brand-text{ line-height:1.1; min-width:0; }
+    .brand-text .title{ font-size:16px; font-weight:900; }
+    .brand-text .sub{ font-size:12px; color:var(--muted); font-weight:700; }
 
-    .docRow{
-      margin-left:auto;
-      display:flex; gap:10px; align-items:center;
-      min-width: 0;
+    .nameWrap{
+      flex:1;
+      display:flex;
+      justify-content:flex-end;
+      min-width:0;
     }
-    .docName{
+    .filename{
+      width:min(520px, 100%);
       height:44px;
-      border-radius:999px;
       border:1px solid var(--line);
-      background:#fff;
+      border-radius:999px;
       padding:0 14px;
-      font-weight:800;
+      font-size:14px;
       outline:none;
-      min-width: 120px;
-      width: min(280px, 44vw);
-    }
-    .pillBtn{
-      height:44px;
-      padding:0 16px;
-      border-radius:999px;
-      border:1px solid var(--line);
       background:#fff;
-      font-weight:900;
-      cursor:pointer;
-      touch-action: manipulation;
+      box-shadow: inset 0 1px 0 rgba(0,0,0,.02);
+    }
+    .filename:focus{
+      border-color: rgba(37,99,235,.45);
+      box-shadow: 0 0 0 4px rgba(37,99,235,.12);
+    }
+
+    /* TOOLBAR */
+    .toolbarWrap{
+      position:sticky;
+      top: calc(68px + var(--safeTop));
+      z-index:25;
+      background: var(--soft);
+      border-bottom:1px solid var(--line);
       pointer-events:auto;
     }
-
-    /* Toolbar card */
-    .card{
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius: var(--r);
-      box-shadow: var(--shadow);
-      overflow:hidden;
-    }
-
     .toolbar{
-      padding: 12px;
+      max-width:1100px;
+      margin:0 auto;
+      padding:10px 12px;
       display:flex;
-      flex-direction:column;
-      gap:12px;
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      background: rgba(255,255,255,.92);
-      backdrop-filter: blur(10px);
+      flex-wrap:wrap;
+      gap:10px;
+      align-items:center;
+      pointer-events:auto;
     }
 
     .group{
-      border:1px solid var(--line);
-      border-radius: 18px;
-      padding: 10px;
-      display:flex;
-      flex-wrap: wrap;
-      gap:10px;
-      align-items:center;
-    }
-
-    .btn{
-      height:44px;
-      padding:0 16px;
-      border-radius:999px;
-      border:1px solid var(--line);
-      background:#fff;
-      font-weight:900;
-      cursor:pointer;
-      touch-action: manipulation;
-      pointer-events:auto;
-      user-select:none;
-    }
-    .btn.primary{
-      background: var(--blue);
-      color:#fff;
-      border-color: transparent;
-      box-shadow: 0 12px 22px rgba(37,99,235,.20);
-    }
-    .btn.primary:active{ background: var(--blue2); }
-    .btn.danger{
-      color: var(--red);
-      border-color: rgba(220,38,38,.35);
-      background:#fff;
-    }
-    .btn:active{ transform: translateY(1px); }
-
-    .iconBtn{
-      width:44px;
-      padding:0;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      font-size:16px;
-    }
-
-    .split{
       display:flex;
       gap:10px;
       align-items:center;
       flex-wrap:wrap;
-    }
-
-    .labelPill{
-      height:44px;
-      padding:0 12px;
-      border-radius:999px;
-      border:1px solid var(--line);
       background:#fff;
-      display:flex;
-      align-items:center;
-      gap:10px;
-      font-weight:900;
-      color:var(--text);
-      touch-action: manipulation;
-      pointer-events:auto;
-    }
-    .swatch{
-      width:26px;height:26px;border-radius:10px;
-      background:#0f172a;
-      border:1px solid rgba(0,0,0,.08);
-      box-shadow: inset 0 0 0 2px rgba(255,255,255,.15);
-      flex:0 0 auto;
-    }
-    input[type="color"]{
-      width:38px;height:44px;
-      border:none;background:transparent;
-      padding:0; margin:0;
-      cursor:pointer;
-      touch-action: manipulation;
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:10px;
+      box-shadow: var(--shadow2);
       pointer-events:auto;
     }
 
-    .select{
+    .btn{
       height:44px;
       border-radius:999px;
       border:1px solid var(--line);
@@ -199,478 +141,720 @@
       font-weight:900;
       font-size:14px;
       color:#111827;
-      outline:none;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      cursor:pointer;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
       touch-action: manipulation;
       pointer-events:auto;
     }
+    .btn:active{ transform:translateY(1px); }
+    .btn.primary{ background:var(--primary); border-color:var(--primary); color:#fff; }
+    .btn.danger{ border-color: rgba(220,38,38,.35); color:var(--danger); }
+
+    .chip{
+      height:38px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:#fff;
+      padding:0 12px;
+      font-weight:900;
+      cursor:pointer;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+      pointer-events:auto;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      user-select:none;
+      color:#111827;
+      font-size:14px;
+    }
+    .chip:active{ transform:translateY(1px); }
+    .chip.on{
+      border-color: rgba(37,99,235,.4);
+      box-shadow: 0 0 0 4px rgba(37,99,235,.10);
+    }
+
+    .colorbox{
+      width:30px;height:30px;border-radius:10px;
+      border:1px solid var(--line);
+      background:#111827;
+      display:inline-block;
+    }
+    input[type="color"]{
+      width:44px;height:38px;
+      border:none;
+      background:transparent;
+      padding:0;
+      pointer-events:auto;
+      touch-action: manipulation;
+    }
+
+    /* SELECT (nuovi controlli font/dimensione) - stesso stile pulito */
+    .select{
+      height:38px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:#fff;
+      padding:0 12px;
+      font-weight:900;
+      font-size:14px;
+      color:#111827;
+      outline:none;
+      touch-action: manipulation;
+      pointer-events:auto;
+      -webkit-tap-highlight-color: transparent;
+    }
     .select:focus{
       border-color: rgba(37,99,235,.45);
-      box-shadow: 0 0 0 4px rgba(37,99,235,.12);
+      box-shadow: 0 0 0 4px rgba(37,99,235,.10);
     }
 
-    /* Editor */
-    .editorWrap{
-      margin-top: 12px;
-      padding: 12px;
+    /* CONTENT */
+    .content{
+      flex:1;
+      display:flex;
+      justify-content:center;
+      background:var(--soft);
+      padding: 10px 12px calc(16px + var(--safeBot) + var(--kbPad));
     }
-    .paper{
+    .page{
+      width:100%;
+      max-width:1100px;
       background:#fff;
       border:1px solid var(--line);
-      border-radius: var(--r);
+      border-radius:18px;
       box-shadow: var(--shadow);
-      padding: 18px;
-      min-height: min(64vh, 620px);
-      max-height: 70vh;
-      overflow:auto;
-
-      /* IMPORTANT: evita che la tastiera copra il testo */
-      padding-bottom: calc(18px + var(--kb, 0px));
+      overflow:hidden;
+      display:flex;
+      flex-direction:column;
+      min-height: 60vh;
+    }
+    .ruler{
+      height:38px;
+      border-bottom:1px solid var(--line);
+      background: linear-gradient(#fff, #fff) padding-box,
+        repeating-linear-gradient(to right, rgba(0,0,0,.08) 0, rgba(0,0,0,.08) 1px, transparent 1px, transparent 22px);
+      opacity:.45;
     }
     .editor{
+      flex:1;
+      padding:18px 18px 30px;
       outline:none;
-      min-height: 48vh;
-      font-size: 18px;
-      line-height: 1.5;
-      color: var(--text);
-      word-break: break-word;
+      font-size:16px;
+      line-height:1.55;
+      color:var(--text);
+      word-wrap: break-word;
+      overflow:auto;
+      -webkit-overflow-scrolling: touch;
+      pointer-events:auto;
+      touch-action: manipulation;
+      user-select:text;
     }
     .editor:empty:before{
       content:"Inizia a scrivere…";
-      color: #9ca3af;
-      font-weight:700;
+      color:#9ca3af;
     }
 
-    /* Toast */
-    .toast{
-      position: fixed;
-      left: 50%;
-      bottom: calc(18px + env(safe-area-inset-bottom));
-      transform: translateX(-50%);
-      background: rgba(17,24,39,.92);
-      color:#fff;
-      padding: 10px 14px;
-      border-radius: 999px;
-      font-weight: 800;
-      font-size: 13px;
-      box-shadow: 0 12px 28px rgba(0,0,0,.25);
-      opacity:0;
+    /* MODALS */
+    .modalBack{
+      position:fixed;
+      inset:0;
+      background: rgba(0,0,0,.24);
+      display:none;
+      align-items:flex-end;
+      justify-content:center;
+      padding: 18px 12px calc(18px + var(--safeBot));
+      z-index:60;
+    }
+    .modalBack.show{ display:flex; }
+    .modal{
+      width:min(680px, 100%);
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:18px;
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .modalHead{
+      padding:14px 14px 10px;
+      border-bottom:1px solid var(--line);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .modalHead .h{ font-weight:900; font-size:16px; }
+    .modalBody{ padding:12px 14px 14px; }
+    .hint{ font-size:13px; color:var(--muted); font-weight:650; margin:0 0 10px; }
+
+    .list{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      max-height: 45vh;
+      overflow:auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .row{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:12px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      background:#fff;
+    }
+    .row .meta{ min-width:0; display:flex; flex-direction:column; gap:4px; }
+    .row .name{ font-weight:900; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .row .date{ font-size:12px; color:var(--muted); font-weight:700; }
+    .row .actions{ display:flex; gap:8px; flex:0 0 auto; }
+    .small{ height:38px; padding:0 12px; font-size:13px; }
+
+    /* TOAST */
+    .status{
+      position:fixed;
+      left:12px; right:12px;
+      bottom: calc(12px + var(--safeBot));
+      display:flex;
+      justify-content:center;
       pointer-events:none;
-      transition: opacity .18s ease, transform .18s ease;
-      z-index: 9999;
+      z-index:70;
     }
-    .toast.show{
-      opacity:1;
-      transform: translateX(-50%) translateY(-4px);
+    .toast{
+      background:#111827;
+      color:#fff;
+      padding:10px 14px;
+      border-radius:999px;
+      font-weight:900;
+      font-size:13px;
+      box-shadow: var(--shadow);
+      opacity:0;
+      transform: translateY(10px);
+      transition:.25s ease;
+      max-width:min(640px, 100%);
+      text-align:center;
     }
+    .toast.show{ opacity:1; transform:translateY(0); }
 
-    /* Print */
     @media print{
-      body{ background:#fff; }
-      .top,.toolbar{ display:none !important; }
-      .app{ padding:0; max-width:none; }
-      .paper{ border:none; box-shadow:none; max-height:none; overflow:visible; }
+      .topbar, .toolbarWrap, .ruler, .status { display:none !important; }
+      .content{ padding:0 !important; background:#fff !important; }
+      .page{ border:none !important; box-shadow:none !important; border-radius:0 !important; }
+      .editor{ padding:0 !important; }
     }
   </style>
 </head>
 
 <body>
   <div class="app">
-    <!-- Header (solo titolo + input nome documento) -->
-    <div class="top">
-      <div class="logo" aria-hidden="true"><span>W</span></div>
-      <div class="brand">
-        <div class="name">WordStudio</div>
-        <div class="sub">stile Word • offline</div>
-      </div>
+    <!-- TOP: niente bottoni -->
+    <header class="topbar">
+      <div class="topbar-inner">
+        <div class="brand">
+          <div class="logo">W</div>
+          <div class="brand-text">
+            <div class="title">WordStudio</div>
+            <div class="sub">stile Word • offline</div>
+          </div>
+        </div>
 
-      <div class="docRow">
-        <input id="docName" class="docName" value="Documento" maxlength="60" />
-        <button id="btnOpenTop" class="pillBtn" type="button">Apri</button>
+        <div class="nameWrap">
+          <input id="fileName" class="filename" type="text" value="Documento" autocomplete="off" />
+        </div>
       </div>
-    </div>
+    </header>
 
-    <!-- Toolbar: TUTTI i comandi qui dentro (come mi hai chiesto) -->
-    <div class="card">
-      <div class="toolbar" id="toolbar">
-        <!-- COMANDI FILE + FORMATT. nello stesso blocco (seconda barra) -->
-        <div class="group" id="mainGroup">
+    <!-- TOOLBAR: TUTTI I COMANDI QUI -->
+    <div class="toolbarWrap">
+      <div class="toolbar">
+        <div class="group" aria-label="File">
           <button class="btn primary" id="btnSave" type="button">Salva</button>
           <button class="btn" id="btnSaveAs" type="button">Salva con nome</button>
+          <button class="btn" id="btnOpen" type="button">Apri</button>
           <button class="btn" id="btnPrint" type="button">Stampa</button>
           <button class="btn danger" id="btnTrash" type="button">Cestino</button>
-          <button class="btn" id="btnOpen" type="button">Apri</button>
+        </div>
 
-          <span style="width:100%;height:1px; background:var(--line); margin:2px 0;"></span>
+        <div class="group" aria-label="Formattazione">
+          <span class="chip" id="btnColor" role="button" aria-label="Colore testo">
+            <span class="colorbox" id="colorBox"></span>
+            <span>Colore</span>
+          </span>
+          <input id="colorPicker" type="color" value="#111827" aria-label="Scegli colore" />
 
-          <label class="labelPill" for="colorPicker">
-            <span class="swatch" id="swatch"></span>
-            Colore
-            <input id="colorPicker" type="color" value="#111827" />
-          </label>
-
-          <!-- FONT -->
-          <select id="fontFamily" class="select" aria-label="Tipo di carattere">
-            <option value="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial">Predefinito</option>
-            <option value="Times New Roman, Times, serif">Times New Roman (Roman)</option>
-            <option value="Georgia, serif">Georgia</option>
-            <option value="Arial, Helvetica, sans-serif">Arial</option>
+          <!-- ✅ NUOVI: FONT + DIMENSIONE (senza cambiare design) -->
+          <select id="fontFamily" class="select" aria-label="Tipo carattere">
+            <option value="">Predefinito</option>
             <option value="Calibri, Arial, sans-serif">Calibri</option>
+            <option value="Times New Roman, Times, serif">Times New Roman (Roman)</option>
+            <option value="Arial, Helvetica, sans-serif">Arial</option>
+            <option value="Georgia, serif">Georgia</option>
             <option value="Verdana, Geneva, sans-serif">Verdana</option>
             <option value="Courier New, Courier, monospace">Courier New</option>
           </select>
 
-          <!-- DIMENSIONI -->
-          <select id="fontSize" class="select" aria-label="Dimensione carattere">
+          <select id="fontSize" class="select" aria-label="Dimensione">
             <option value="12">12</option>
             <option value="14">14</option>
-            <option value="16">16</option>
-            <option value="18" selected>18</option>
+            <option value="16" selected>16</option>
+            <option value="18">18</option>
             <option value="20">20</option>
             <option value="24">24</option>
             <option value="28">28</option>
             <option value="32">32</option>
           </select>
 
-          <button class="btn iconBtn" id="btnB" type="button"><b>B</b></button>
-          <button class="btn iconBtn" id="btnI" type="button"><i>I</i></button>
-          <button class="btn iconBtn" id="btnU" type="button"><u>U</u></button>
-          <button class="btn iconBtn" id="btnS" type="button"><s>S</s></button>
+          <button class="chip" id="btnBold" type="button"><b>B</b></button>
+          <button class="chip" id="btnItalic" type="button"><i>I</i></button>
+          <button class="chip" id="btnUnderline" type="button"><u>U</u></button>
+          <button class="chip" id="btnStrike" type="button"><span style="text-decoration:line-through;font-weight:900;">S</span></button>
 
-          <button class="btn" id="btnTitle" type="button">Titolo</button>
-          <button class="btn" id="btnPara" type="button">Paragrafo</button>
-          <button class="btn" id="btnList" type="button">• Elenco</button>
-        </div>
-      </div>
-
-      <!-- Editor -->
-      <div class="editorWrap">
-        <div class="paper" id="paper">
-          <div id="editor" class="editor" contenteditable="true" spellcheck="true"></div>
+          <button class="chip" id="btnH" type="button">Titolo</button>
+          <button class="chip" id="btnP" type="button">Paragrafo</button>
+          <button class="chip" id="btnBullets" type="button">• Elenco</button>
         </div>
       </div>
     </div>
+
+    <main class="content">
+      <section class="page">
+        <div class="ruler"></div>
+        <div id="editor" class="editor" contenteditable="true" spellcheck="true"></div>
+      </section>
+    </main>
+
+    <!-- Modal Apri -->
+    <div class="modalBack" id="openModal" aria-hidden="true">
+      <div class="modal" role="dialog" aria-modal="true" aria-label="Apri documento">
+        <div class="modalHead">
+          <div class="h">Apri documento</div>
+          <button class="btn small" id="btnCloseOpen" type="button">Chiudi</button>
+        </div>
+        <div class="modalBody">
+          <p class="hint">I documenti vengono salvati offline su questo dispositivo.</p>
+          <div class="list" id="docList"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Cestino -->
+    <div class="modalBack" id="trashModal" aria-hidden="true">
+      <div class="modal" role="dialog" aria-modal="true" aria-label="Cestino">
+        <div class="modalHead">
+          <div class="h">Cestino</div>
+          <button class="btn small" id="btnCloseTrash" type="button">Chiudi</button>
+        </div>
+        <div class="modalBody">
+          <p class="hint">Ripristina o elimina definitivamente.</p>
+          <div class="list" id="trashList"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="status"><div class="toast" id="toast"></div></div>
   </div>
 
-  <div class="toast" id="toast">OK</div>
+<script>
+(() => {
+  "use strict";
+  const $ = (id) => document.getElementById(id);
 
-  <!-- input file nascosto -->
-  <input id="fileInput" type="file" accept=".html,.txt,.docx,.md,.rtf,text/plain,text/html" style="display:none" />
+  const editor = $("editor");
+  const fileName = $("fileName");
+  const toast = $("toast");
 
-  <script>
-    // ---------- Helpers ----------
-    const $ = (id) => document.getElementById(id);
-    const editor = $("editor");
-    const paper = $("paper");
+  const btnSave = $("btnSave");
+  const btnSaveAs = $("btnSaveAs");
+  const btnOpen = $("btnOpen");
+  const btnPrint = $("btnPrint");
+  const btnTrash = $("btnTrash");
 
-    const docName = $("docName");
+  const openModal = $("openModal");
+  const trashModal = $("trashModal");
+  const btnCloseOpen = $("btnCloseOpen");
+  const btnCloseTrash = $("btnCloseTrash");
+  const docList = $("docList");
+  const trashList = $("trashList");
 
-    const btnSave = $("btnSave");
-    const btnSaveAs = $("btnSaveAs");
-    const btnPrint = $("btnPrint");
-    const btnTrash = $("btnTrash");
-    const btnOpen = $("btnOpen");
-    const btnOpenTop = $("btnOpenTop");
+  const colorPicker = $("colorPicker");
+  const colorBox = $("colorBox");
+  const btnColor = $("btnColor");
 
-    const colorPicker = $("colorPicker");
-    const swatch = $("swatch");
+  const btnBold = $("btnBold");
+  const btnItalic = $("btnItalic");
+  const btnUnderline = $("btnUnderline");
+  const btnStrike = $("btnStrike");
+  const btnH = $("btnH");
+  const btnP = $("btnP");
+  const btnBullets = $("btnBullets");
 
-    const fontFamily = $("fontFamily");
-    const fontSize = $("fontSize");
+  // ✅ nuovi
+  const fontFamily = $("fontFamily");
+  const fontSize = $("fontSize");
 
-    const btnB = $("btnB");
-    const btnI = $("btnI");
-    const btnU = $("btnU");
-    const btnS = $("btnS");
-    const btnTitle = $("btnTitle");
-    const btnPara = $("btnPara");
-    const btnList = $("btnList");
+  const KEY_DOCS = "wordstudio_docs_v3";
+  const KEY_TRASH = "wordstudio_trash_v3";
+  const KEY_LAST = "wordstudio_last_open_v3";
 
-    const fileInput = $("fileInput");
-    const toast = $("toast");
+  const nowISO = () => new Date().toISOString();
+  const fmtDate = (iso) => {
+    try{
+      const d = new Date(iso);
+      return d.toLocaleString("it-IT", { year:"numeric", month:"2-digit", day:"2-digit", hour:"2-digit", minute:"2-digit" });
+    }catch(e){ return iso; }
+  };
 
-    function showToast(msg){
-      toast.textContent = msg;
-      toast.classList.add("show");
-      clearTimeout(showToast._t);
-      showToast._t = setTimeout(()=>toast.classList.remove("show"), 1100);
-    }
+  const loadJSON = (k, fallback) => {
+    try{
+      const v = localStorage.getItem(k);
+      return v ? JSON.parse(v) : fallback;
+    }catch(e){ return fallback; }
+  };
+  const saveJSON = (k, val) => localStorage.setItem(k, JSON.stringify(val));
 
-    function hardFocusEditor(){
-      // Forza focus affidabile su Android WebView
-      editor.focus({preventScroll:true});
-      // Piccolo "nudge" per far aggiornare la selezione in alcuni WebView
+  const normalizeName = (name) => (name || "").trim().replace(/\s+/g, " ").slice(0, 60) || "Documento";
+  const getCurrentName = () => normalizeName(fileName.value);
+  const getHTML = () => editor.innerHTML || "";
+  const setHTML = (html) => { editor.innerHTML = html || "<p></p>"; };
+
+  // Focus robusto
+  const hardFocusEditor = () => {
+    editor.focus({ preventScroll:true });
+    try{
       const sel = window.getSelection();
-      if (!sel || sel.rangeCount === 0){
+      if (!sel) return;
+      if (sel.rangeCount === 0) {
         const r = document.createRange();
         r.selectNodeContents(editor);
         r.collapse(false);
-        sel?.removeAllRanges();
-        sel?.addRange(r);
+        sel.removeAllRanges();
+        sel.addRange(r);
       }
-    }
+    }catch(e){}
+  };
 
-    function exec(cmd, value=null){
-      hardFocusEditor();
-      try{
-        document.execCommand("styleWithCSS", false, true);
-      }catch(e){}
-      try{
-        document.execCommand(cmd, false, value);
-      }catch(e){}
-      // Mantieni caret visibile
-      requestAnimationFrame(scrollCaretIntoView);
-    }
+  editor.addEventListener("pointerdown", () => hardFocusEditor(), { passive:true });
+  editor.addEventListener("click", () => hardFocusEditor());
 
-    function scrollCaretIntoView(){
-      try{
-        const sel = window.getSelection();
-        if (!sel || sel.rangeCount === 0) return;
-        const range = sel.getRangeAt(0).cloneRange();
-        range.collapse(true);
-        const rects = range.getClientRects();
-        if (!rects || rects.length === 0) return;
-        const rect = rects[0];
-        const paperRect = paper.getBoundingClientRect();
-        const y = rect.top - paperRect.top + paper.scrollTop;
+  // Toast
+  let toastTimer = null;
+  const showToast = (msg) => {
+    toast.textContent = msg;
+    toast.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove("show"), 1600);
+  };
 
-        // Se caret è troppo vicino al fondo, scrolla
-        const margin = 120;
-        if (y > paper.scrollTop + paper.clientHeight - margin){
-          paper.scrollTop = Math.min(paper.scrollHeight, y - (paper.clientHeight - margin));
-        } else if (y < paper.scrollTop + 60){
-          paper.scrollTop = Math.max(0, y - 60);
-        }
-      }catch(e){}
-    }
+  // execCommand helper
+  const exec = (cmd, val=null) => {
+    hardFocusEditor();
+    try{ document.execCommand("styleWithCSS", false, true); }catch(e){}
+    try{ document.execCommand(cmd, false, val); }catch(e){}
+  };
 
-    // ---------- Storage ----------
-    const LS_INDEX = "wordstudio:index"; // { currentId, docs: {id:{name,html,updated}} }
-    function loadIndex(){
-      try{
-        const raw = localStorage.getItem(LS_INDEX);
-        if (!raw) return { currentId:null, docs:{} };
-        const obj = JSON.parse(raw);
-        if (!obj || typeof obj !== "object") throw 0;
-        obj.docs ||= {};
-        return obj;
-      }catch(e){
-        return { currentId:null, docs:{} };
-      }
-    }
-    function saveIndex(data){
-      localStorage.setItem(LS_INDEX, JSON.stringify(data));
-    }
-    function newId(){
-      return "d_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2,8);
-    }
+  // Storage docs
+  const getDocs = () => loadJSON(KEY_DOCS, []);
+  const setDocs = (arr) => saveJSON(KEY_DOCS, arr);
 
-    let state = loadIndex();
+  const getTrash = () => loadJSON(KEY_TRASH, []);
+  const setTrash = (arr) => saveJSON(KEY_TRASH, arr);
 
-    function setCurrentDoc(id){
-      state.currentId = id;
-      saveIndex(state);
+  const upsertDoc = (name, html) => {
+    const docs = getDocs();
+    const n = normalizeName(name);
+    const idx = docs.findIndex(d => d.name.toLowerCase() === n.toLowerCase());
+    const entry = { name:n, html, updatedAt: nowISO() };
+    if (idx >= 0) docs[idx] = entry; else docs.unshift(entry);
+    setDocs(docs);
+    localStorage.setItem(KEY_LAST, n);
+    return entry;
+  };
+
+  const openDocByName = (name) => {
+    const n = normalizeName(name);
+    const doc = getDocs().find(d => d.name.toLowerCase() === n.toLowerCase());
+    if (!doc) return false;
+    fileName.value = doc.name;
+    setHTML(doc.html);
+    localStorage.setItem(KEY_LAST, doc.name);
+    setTimeout(hardFocusEditor, 80);
+    return true;
+  };
+
+  const moveToTrash = (name) => {
+    const n = normalizeName(name);
+    const docs = getDocs();
+    const idx = docs.findIndex(d => d.name.toLowerCase() === n.toLowerCase());
+    if (idx < 0) return false;
+    const [removed] = docs.splice(idx, 1);
+    setDocs(docs);
+
+    const trash = getTrash();
+    trash.unshift({ ...removed, deletedAt: nowISO() });
+    setTrash(trash);
+    return true;
+  };
+
+  const restoreFromTrash = (name) => {
+    const n = normalizeName(name);
+    const trash = getTrash();
+    const idx = trash.findIndex(d => d.name.toLowerCase() === n.toLowerCase());
+    if (idx < 0) return false;
+    const [rest] = trash.splice(idx, 1);
+    setTrash(trash);
+    upsertDoc(rest.name, rest.html);
+    return true;
+  };
+
+  const deleteForever = (name) => {
+    const n = normalizeName(name);
+    const trash = getTrash();
+    const idx = trash.findIndex(d => d.name.toLowerCase() === n.toLowerCase());
+    if (idx < 0) return false;
+    trash.splice(idx, 1);
+    setTrash(trash);
+    return true;
+  };
+
+  // Escape
+  const escapeHTML = (str) => String(str).replace(/[&<>"']/g, s => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+  }[s]));
+  const escapeAttr = (str) => String(str).replace(/"/g, "&quot;");
+
+  // Modals
+  const showModal = (el) => { el.classList.add("show"); el.setAttribute("aria-hidden","false"); };
+  const hideModal = (el) => { el.classList.remove("show"); el.setAttribute("aria-hidden","true"); };
+
+  [openModal, trashModal].forEach(mod => {
+    mod.addEventListener("click", (e) => { if (e.target === mod) hideModal(mod); });
+  });
+
+  const renderDocs = () => {
+    const docs = getDocs();
+    docList.innerHTML = "";
+    if (!docs.length){
+      docList.innerHTML = `<div class="row"><div class="meta"><div class="name">Nessun documento</div><div class="date">Salva un documento per vederlo qui.</div></div></div>`;
+      return;
     }
-
-    function currentDoc(){
-      if (!state.currentId) return null;
-      return state.docs[state.currentId] || null;
+    for (const d of docs){
+      const row = document.createElement("div");
+      row.className = "row";
+      row.innerHTML = `
+        <div class="meta">
+          <div class="name">${escapeHTML(d.name)}</div>
+          <div class="date">Aggiornato: ${escapeHTML(fmtDate(d.updatedAt))}</div>
+        </div>
+        <div class="actions">
+          <button class="btn small primary" data-open="${escapeAttr(d.name)}" type="button">Apri</button>
+          <button class="btn small danger" data-trash="${escapeAttr(d.name)}" type="button">Elimina</button>
+        </div>
+      `;
+      docList.appendChild(row);
     }
-
-    function ensureDoc(){
-      if (!state.currentId || !state.docs[state.currentId]){
-        const id = newId();
-        state.docs[id] = {
-          name: docName.value.trim() || "Documento",
-          html: "",
-          updated: Date.now()
-        };
-        setCurrentDoc(id);
-        saveIndex(state);
-      }
-      return state.currentId;
-    }
-
-    function persistCurrent(html){
-      const id = ensureDoc();
-      state.docs[id].name = docName.value.trim() || "Documento";
-      state.docs[id].html = html;
-      state.docs[id].updated = Date.now();
-      saveIndex(state);
-    }
-
-    function restore(){
-      const doc = currentDoc();
-      if (doc){
-        docName.value = doc.name || "Documento";
-        editor.innerHTML = doc.html || "";
-      }else{
-        // se nulla, crea documento vuoto
-        ensureDoc();
-        editor.innerHTML = "";
-      }
-    }
-
-    // Auto-save leggero mentre scrivi
-    let autosaveTimer = null;
-    editor.addEventListener("input", ()=>{
-      clearTimeout(autosaveTimer);
-      autosaveTimer = setTimeout(()=>{
-        persistCurrent(editor.innerHTML);
-      }, 350);
-      requestAnimationFrame(scrollCaretIntoView);
+    docList.querySelectorAll("[data-open]").forEach(b => {
+      b.addEventListener("click", () => {
+        openDocByName(b.getAttribute("data-open"));
+        hideModal(openModal);
+        showToast("Documento aperto");
+      });
     });
-
-    // ---------- File actions ----------
-    function downloadText(filename, text, mime){
-      const blob = new Blob([text], {type: mime || "text/plain;charset=utf-8"});
-      const a = document.createElement("a");
-      a.href = URL.createObjectURL(blob);
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      setTimeout(()=>{
-        URL.revokeObjectURL(a.href);
-        a.remove();
-      }, 0);
-    }
-
-    function saveNow(withName){
-      const name = (docName.value || "Documento").trim();
-      if (withName){
-        const next = prompt("Nome documento:", name);
-        if (next === null) return;
-        docName.value = (next.trim() || "Documento");
-      }
-      persistCurrent(editor.innerHTML);
-      showToast("Salvato");
-    }
-
-    function openFromPicker(){
-      fileInput.value = "";
-      fileInput.click();
-    }
-
-    fileInput.addEventListener("change", async ()=>{
-      const f = fileInput.files && fileInput.files[0];
-      if (!f) return;
-
-      try{
-        const text = await f.text();
-
-        // Se è HTML: prova a estrarre body, altrimenti usa testo puro
-        let html = "";
-        if (/<html|<body|<\/p>|<\/div>|<br/i.test(text)){
-          // estrai body se presente
-          const m = text.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
-          html = (m ? m[1] : text).trim();
-          // se contiene tag <script> o <style> dall'esterno, li rimuoviamo
-          html = html.replace(/<script[\s\S]*?<\/script>/gi,"").replace(/<style[\s\S]*?<\/style>/gi,"");
-        }else{
-          // testo -> converti in HTML semplice
-          const safe = text
-            .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
-            .replace(/\n/g,"<br>");
-          html = safe;
+    docList.querySelectorAll("[data-trash]").forEach(b => {
+      b.addEventListener("click", () => {
+        if (moveToTrash(b.getAttribute("data-trash"))){
+          renderDocs();
+          showToast("Spostato nel cestino");
         }
-
-        editor.innerHTML = html;
-
-        // Nuovo doc
-        const id = newId();
-        const base = f.name.replace(/\.[^.]+$/,"") || "Documento";
-        docName.value = base.slice(0,60);
-        state.docs[id] = { name: docName.value, html: editor.innerHTML, updated: Date.now() };
-        setCurrentDoc(id);
-        saveIndex(state);
-
-        showToast("Aperto");
-        hardFocusEditor();
-      }catch(e){
-        showToast("Errore apertura");
-      }
+      });
     });
+  };
 
-    function emptyTrash(){
-      if (!confirm("Vuoi cancellare il contenuto?")) return;
-      editor.innerHTML = "";
-      persistCurrent("");
-      showToast("Cestino svuotato");
-      hardFocusEditor();
+  const renderTrash = () => {
+    const items = getTrash();
+    trashList.innerHTML = "";
+    if (!items.length){
+      trashList.innerHTML = `<div class="row"><div class="meta"><div class="name">Cestino vuoto</div><div class="date">Nessun elemento eliminato.</div></div></div>`;
+      return;
     }
-
-    function doPrint(){
-      // salva prima di stampare
-      persistCurrent(editor.innerHTML);
-      showToast("Stampa…");
-      setTimeout(()=>window.print(), 200);
+    for (const d of items){
+      const row = document.createElement("div");
+      row.className = "row";
+      row.innerHTML = `
+        <div class="meta">
+          <div class="name">${escapeHTML(d.name)}</div>
+          <div class="date">Eliminato: ${escapeHTML(fmtDate(d.deletedAt || d.updatedAt))}</div>
+        </div>
+        <div class="actions">
+          <button class="btn small" data-restore="${escapeAttr(d.name)}" type="button">Ripristina</button>
+          <button class="btn small danger" data-delete="${escapeAttr(d.name)}" type="button">Elimina</button>
+        </div>
+      `;
+      trashList.appendChild(row);
     }
-
-    // Export semplice (HTML)
-    function exportHtmlFile(){
-      const name = (docName.value || "Documento").trim();
-      // documento stampabile pulito
-      const html =
-`<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>${name}</title>
-<style>body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;margin:20px;color:#111827} img{max-width:100%}</style>
-</head><body>${editor.innerHTML}</body></html>`;
-      downloadText(name + ".html", html, "text/html;charset=utf-8");
-    }
-
-    // ---------- Formatting ----------
-    function applyColor(hex){
-      swatch.style.background = hex;
-      exec("foreColor", hex);
-    }
-
-    function applyFontFamily(v){
-      hardFocusEditor();
-      // prova standard
-      try{ document.execCommand("fontName", false, v); }catch(e){}
-      // fallback robusto
-      try{
-        const sel = window.getSelection();
-        if (sel && sel.rangeCount){
-          const range = sel.getRangeAt(0);
-          if (!range.collapsed){
-            const span = document.createElement("span");
-            span.style.fontFamily = v;
-            range.surroundContents(span);
-          }
+    trashList.querySelectorAll("[data-restore]").forEach(b => {
+      b.addEventListener("click", () => {
+        if (restoreFromTrash(b.getAttribute("data-restore"))){
+          renderTrash();
+          showToast("Ripristinato");
         }
-      }catch(e){}
-      showToast("Font applicato");
-      requestAnimationFrame(scrollCaretIntoView);
-    }
+      });
+    });
+    trashList.querySelectorAll("[data-delete]").forEach(b => {
+      b.addEventListener("click", () => {
+        if (deleteForever(b.getAttribute("data-delete"))){
+          renderTrash();
+          showToast("Eliminato definitivamente");
+        }
+      });
+    });
+  };
 
-    function applyFontSize(px){
-      hardFocusEditor();
+  // ✅ FONT + SIZE (aggiunti senza toccare altro)
+  const applyFontFamily = (family) => {
+    hardFocusEditor();
+    if (!family){
+      showToast("Font predefinito");
+      return;
+    }
+    // execCommand fontName spesso funziona bene su WebView
+    try{ document.execCommand("fontName", false, family); }catch(e){}
+    // fallback: avvolgi selezione in span
+    try{
       const sel = window.getSelection();
-      if (!sel || sel.rangeCount === 0) return;
+      if (sel && sel.rangeCount){
+        const range = sel.getRangeAt(0);
+        if (!range.collapsed){
+          const span = document.createElement("span");
+          span.style.fontFamily = family;
+          range.surroundContents(span);
+        }
+      }
+    }catch(e){}
+  };
 
-      // Selezione -> avvolgi in span con font-size
-      try{
+  const applyFontSizePx = (px) => {
+    hardFocusEditor();
+    // se c'è selezione: span con px (più affidabile)
+    try{
+      const sel = window.getSelection();
+      if (sel && sel.rangeCount){
         const range = sel.getRangeAt(0);
         if (!range.collapsed){
           const span = document.createElement("span");
           span.style.fontSize = px + "px";
           range.surroundContents(span);
-          showToast("Dimensione applicata");
-          requestAnimationFrame(scrollCaretIntoView);
           return;
         }
-      }catch(e){}
+      }
+    }catch(e){}
 
-      // Nessuna selezione: imposta uno stile "inseribile" tramite execCommand fallback
-      // (execCommand fontSize usa 1..7, quindi facciamo un trucco e poi convertiamo)
-      try{
-        document.execCommand("fontSize", false, "7");
-        // Converti i <font size="7"> in span con px
-        const fonts = editor.querySelectorAll('font[size="7"]');
-        fonts.forEach(ft=>{
-          const span = document.createElement("span");
-          span.style.fontSize = px + "px";
-          span.innerHTML = ft.innerHTML;
-          ft.replaceWith(span);
-        });
-        
+    // altrimenti: trucco execCommand fontSize (1..7) -> poi convertiamo i <font>
+    try{
+      document.execCommand("fontSize", false, "7");
+      const fonts = editor.querySelectorAll('font[size="7"]');
+      fonts.forEach(ft=>{
+        const span = document.createElement("span");
+        span.style.fontSize = px + "px";
+        span.innerHTML = ft.innerHTML;
+        ft.replaceWith(span);
+      });
+    }catch(e){}
+  };
+
+  fontFamily.addEventListener("change", () => {
+    const v = fontFamily.value;
+    applyFontFamily(v);
+    showToast("Font applicato");
+  });
+
+  fontSize.addEventListener("change", () => {
+    const px = parseInt(fontSize.value, 10);
+    if (!isNaN(px)){
+      applyFontSizePx(px);
+      showToast("Dimensione " + px);
+    }
+  });
+
+  // Colore
+  const applyColor = (hex) => {
+    colorBox.style.background = hex;
+    exec("foreColor", hex);
+  };
+  colorPicker.addEventListener("input", () => applyColor(colorPicker.value), { passive:true });
+  btnColor.addEventListener("click", () => colorPicker.click());
+
+  // Pulsanti formattazione
+  btnBold.addEventListener("click", () => exec("bold"));
+  btnItalic.addEventListener("click", () => exec("italic"));
+  btnUnderline.addEventListener("click", () => exec("underline"));
+  btnStrike.addEventListener("click", () => exec("strikeThrough"));
+
+  btnH.addEventListener("click", () => exec("formatBlock", "h1"));
+  btnP.addEventListener("click", () => exec("formatBlock", "p"));
+  btnBullets.addEventListener("click", () => exec("insertUnorderedList"));
+
+  // Save / SaveAs / Print / Open / Trash
+  const doSave = (askName) => {
+    let name = getCurrentName();
+    if (askName){
+      const n = prompt("Nome documento:", name);
+      if (n === null) return;
+      fileName.value = normalizeName(n);
+      name = getCurrentName();
+    }
+    upsertDoc(name, getHTML());
+    showToast("Salvato");
+  };
+
+  btnSave.addEventListener("click", () => doSave(false));
+  btnSaveAs.addEventListener("click", () => doSave(true));
+
+  btnPrint.addEventListener("click", () => {
+    doSave(false);
+    showToast("Stampa…");
+    setTimeout(() => window.print(), 250);
+  });
+
+  btnOpen.addEventListener("click", () => {
+    renderDocs();
+    showModal(openModal);
+  });
+
+  btnTrash.addEventListener("click", () => {
+    renderTrash();
+    showModal(trashModal);
+  });
+
+  btnCloseOpen.addEventListener("click", () => hideModal(openModal));
+  btnCloseTrash.addEventListener("click", () => hideModal(trashModal));
+
+  // Autosave leggero
+  let t = null;
+  editor.addEventListener("input", () => {
+    clearTimeout(t);
+    t = setTimeout(() => {
+      const name = getCurrentName();
+      upsertDoc(name, getHTML());
+    }, 450);
+  });
+
+  // Restore last
+  const last = localStorage.getItem(KEY_LAST);
+  if (last){
+    openDocByName(last);
+  } else {
+    setHTML("<p></p>");
+  }
+
+  // Init colore
+  applyColor(colorPicker.value);
+  setTimeout(hardFocusEditor, 120);
+})();
+</script>
+</body>
+</html>
