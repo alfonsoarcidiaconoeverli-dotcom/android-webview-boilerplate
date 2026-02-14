@@ -5,21 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#ffffff" />
   <title>WordStudio</title>
+
   <style>
     :root{
       --bg:#ffffff;
       --panel:#ffffff;
+      --soft:#f7f7f8;
       --line:#e6e6e6;
       --muted:#6b7280;
       --text:#111827;
       --primary:#2563eb;
       --danger:#dc2626;
-      --radius:14px;
-      --shadow:0 8px 22px rgba(0,0,0,.06);
+
+      --shadow:0 10px 26px rgba(0,0,0,.06);
       --shadow2:0 4px 14px rgba(0,0,0,.05);
-      --btnh:44px;
+
       --safeTop: env(safe-area-inset-top, 0px);
       --safeBot: env(safe-area-inset-bottom, 0px);
+      --kbPad: 0px;
     }
 
     *{ box-sizing:border-box; }
@@ -31,6 +34,7 @@
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
       -webkit-font-smoothing:antialiased;
       overscroll-behavior:none;
+      touch-action:manipulation;
     }
 
     .app{
@@ -38,10 +42,9 @@
       display:flex;
       flex-direction:column;
       background:var(--bg);
-      touch-action:manipulation;
     }
 
-    /* TOP SOLO TESTO: niente bottoni importanti qui */
+    /* TOPBAR: SOLO BRAND + NOME, ZERO BOTTONI (zona che nel WebView può non cliccare) */
     .topbar{
       position:sticky;
       top:0;
@@ -57,29 +60,31 @@
       align-items:center;
       gap:12px;
     }
-    .brand{ display:flex; align-items:center; gap:10px; user-select:none; }
+    .brand{
+      display:flex; align-items:center; gap:10px;
+      user-select:none;
+      min-width:0;
+    }
     .logo{
       width:36px;height:36px;border-radius:10px;
       background:var(--primary);
       display:grid;place-items:center;
       color:#fff;font-weight:900;
       box-shadow: var(--shadow2);
+      flex:0 0 auto;
     }
-    .brand-text{ line-height:1.1; }
+    .brand-text{ line-height:1.1; min-width:0; }
     .brand-text .title{ font-size:16px; font-weight:900; }
     .brand-text .sub{ font-size:12px; color:var(--muted); font-weight:700; }
 
-    .filebar{
+    .nameWrap{
       flex:1;
       display:flex;
-      gap:10px;
-      align-items:center;
       justify-content:flex-end;
       min-width:0;
     }
     .filename{
-      flex:1;
-      min-width:0;
+      width:min(520px, 100%);
       height:44px;
       border:1px solid var(--line);
       border-radius:999px;
@@ -94,13 +99,14 @@
       box-shadow: 0 0 0 4px rgba(37,99,235,.12);
     }
 
-    /* TOOLBAR: qui mettiamo TUTTO (file + formattazione) */
+    /* TOOLBAR: QUI CI METTIAMO TUTTO (file + formattazione) */
     .toolbarWrap{
       position:sticky;
-      top: calc(68px + var(--safeTop)); /* sotto topbar */
+      top: calc(68px + var(--safeTop));
       z-index:25;
-      background: #f7f7f8;
+      background: var(--soft);
       border-bottom:1px solid var(--line);
+      pointer-events:auto;
     }
     .toolbar{
       max-width:1100px;
@@ -111,7 +117,6 @@
       gap:10px;
       align-items:center;
       pointer-events:auto;
-      touch-action: manipulation;
     }
 
     .group{
@@ -124,6 +129,7 @@
       border-radius:18px;
       padding:10px;
       box-shadow: var(--shadow2);
+      pointer-events:auto;
     }
 
     .btn{
@@ -162,6 +168,7 @@
       display:inline-flex;
       align-items:center;
       gap:8px;
+      user-select:none;
     }
     .chip:active{ transform:translateY(1px); }
     .chip.on{
@@ -180,6 +187,8 @@
       border:none;
       background:transparent;
       padding:0;
+      pointer-events:auto;
+      touch-action: manipulation;
     }
 
     /* CONTENT */
@@ -187,8 +196,8 @@
       flex:1;
       display:flex;
       justify-content:center;
-      background:#f7f7f8;
-      padding: 10px 12px calc(16px + var(--safeBot) + var(--kbPad, 0px));
+      background:var(--soft);
+      padding: 10px 12px calc(16px + var(--safeBot) + var(--kbPad));
     }
     .page{
       width:100%;
@@ -200,7 +209,7 @@
       overflow:hidden;
       display:flex;
       flex-direction:column;
-      min-height: 55vh;
+      min-height: 60vh;
     }
     .ruler{
       height:38px;
@@ -318,100 +327,99 @@
     }
   </style>
 </head>
+
 <body>
-<div class="app" id="app">
-  <header class="topbar">
-    <div class="topbar-inner">
-      <div class="brand">
-        <div class="logo">W</div>
-        <div class="brand-text">
-          <div class="title">WordStudio</div>
-          <div class="sub">stile Word • offline</div>
+  <div class="app">
+    <!-- TOP: niente bottoni -->
+    <header class="topbar">
+      <div class="topbar-inner">
+        <div class="brand">
+          <div class="logo">W</div>
+          <div class="brand-text">
+            <div class="title">WordStudio</div>
+            <div class="sub">stile Word • offline</div>
+          </div>
+        </div>
+
+        <div class="nameWrap">
+          <input id="fileName" class="filename" type="text" value="Documento" autocomplete="off" />
         </div>
       </div>
+    </header>
 
-      <div class="filebar">
-        <input id="fileName" class="filename" type="text" value="Documento" autocomplete="off" />
-        <!-- Apri resta qui (se anche questo non clicca, lo trovi anche nei bottoni sotto) -->
-        <button class="btn" id="btnOpenTop" type="button">Apri</button>
+    <!-- TOOLBAR: TUTTI I COMANDI QUI -->
+    <div class="toolbarWrap">
+      <div class="toolbar">
+        <div class="group" aria-label="File">
+          <button class="btn primary" id="btnSave" type="button">Salva</button>
+          <button class="btn" id="btnSaveAs" type="button">Salva con nome</button>
+          <button class="btn" id="btnOpen" type="button">Apri</button>
+          <button class="btn" id="btnPrint" type="button">Stampa</button>
+          <button class="btn danger" id="btnTrash" type="button">Cestino</button>
+        </div>
+
+        <div class="group" aria-label="Formattazione">
+          <span class="chip" id="btnColor" role="button" aria-label="Colore testo">
+            <span class="colorbox" id="colorBox"></span>
+            <span>Colore</span>
+          </span>
+          <input id="colorPicker" type="color" value="#111827" aria-label="Scegli colore" />
+
+          <button class="chip" id="btnBold" type="button"><b>B</b></button>
+          <button class="chip" id="btnItalic" type="button"><i>I</i></button>
+          <button class="chip" id="btnUnderline" type="button"><u>U</u></button>
+          <button class="chip" id="btnStrike" type="button"><span style="text-decoration:line-through;font-weight:900;">S</span></button>
+
+          <button class="chip" id="btnH" type="button">Titolo</button>
+          <button class="chip" id="btnP" type="button">Paragrafo</button>
+          <button class="chip" id="btnBullets" type="button">• Elenco</button>
+        </div>
       </div>
     </div>
-  </header>
 
-  <!-- TOOLBAR STICKY: QUI METTIAMO I BOTTONI IMPORTANTI -->
-  <div class="toolbarWrap">
-    <div class="toolbar">
-      <div class="group" aria-label="File">
-        <button class="btn primary" id="btnSave" type="button">Salva</button>
-        <button class="btn" id="btnSaveAs" type="button">Salva con nome</button>
-        <button class="btn" id="btnPrint" type="button">Stampa</button>
-        <button class="btn danger" id="btnTrash" type="button">Cestino</button>
-        <!-- Apri duplicato (così sei sicuro) -->
-        <button class="btn" id="btnOpen" type="button">Apri</button>
-      </div>
+    <main class="content">
+      <section class="page">
+        <div class="ruler"></div>
+        <div id="editor" class="editor" contenteditable="true" spellcheck="true"></div>
+      </section>
+    </main>
 
-      <div class="group" aria-label="Formattazione">
-        <span class="chip" id="btnColor" role="button" aria-label="Colore testo">
-          <span class="colorbox" id="colorBox"></span>
-          <span>Colore</span>
-        </span>
-        <input id="colorPicker" type="color" value="#111827" aria-label="Scegli colore" />
-
-        <button class="chip" id="btnBold" type="button"><b>B</b></button>
-        <button class="chip" id="btnItalic" type="button"><i>I</i></button>
-        <button class="chip" id="btnUnderline" type="button"><u>U</u></button>
-        <button class="chip" id="btnStrike" type="button"><span style="text-decoration:line-through;font-weight:900;">S</span></button>
-
-        <button class="chip" id="btnH" type="button">Titolo</button>
-        <button class="chip" id="btnP" type="button">Paragrafo</button>
-        <button class="chip" id="btnBullets" type="button">• Elenco</button>
+    <!-- Modal Apri -->
+    <div class="modalBack" id="openModal" aria-hidden="true">
+      <div class="modal" role="dialog" aria-modal="true" aria-label="Apri documento">
+        <div class="modalHead">
+          <div class="h">Apri documento</div>
+          <button class="btn small" id="btnCloseOpen" type="button">Chiudi</button>
+        </div>
+        <div class="modalBody">
+          <p class="hint">I documenti vengono salvati offline su questo dispositivo.</p>
+          <div class="list" id="docList"></div>
+        </div>
       </div>
     </div>
+
+    <!-- Modal Cestino -->
+    <div class="modalBack" id="trashModal" aria-hidden="true">
+      <div class="modal" role="dialog" aria-modal="true" aria-label="Cestino">
+        <div class="modalHead">
+          <div class="h">Cestino</div>
+          <button class="btn small" id="btnCloseTrash" type="button">Chiudi</button>
+        </div>
+        <div class="modalBody">
+          <p class="hint">Ripristina o elimina definitivamente.</p>
+          <div class="list" id="trashList"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="status"><div class="toast" id="toast"></div></div>
   </div>
-
-  <main class="content">
-    <section class="page">
-      <div class="ruler"></div>
-      <div id="editor" class="editor" contenteditable="true" spellcheck="true"></div>
-    </section>
-  </main>
-
-  <!-- Modal Apri -->
-  <div class="modalBack" id="openModal" aria-hidden="true">
-    <div class="modal" role="dialog" aria-modal="true" aria-label="Apri documento">
-      <div class="modalHead">
-        <div class="h">Apri documento</div>
-        <button class="btn small" id="btnCloseOpen" type="button">Chiudi</button>
-      </div>
-      <div class="modalBody">
-        <p class="hint">I documenti vengono salvati offline su questo dispositivo.</p>
-        <div class="list" id="docList"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal Cestino -->
-  <div class="modalBack" id="trashModal" aria-hidden="true">
-    <div class="modal" role="dialog" aria-modal="true" aria-label="Cestino">
-      <div class="modalHead">
-        <div class="h">Cestino</div>
-        <button class="btn small" id="btnCloseTrash" type="button">Chiudi</button>
-      </div>
-      <div class="modalBody">
-        <p class="hint">Ripristina o elimina definitivamente.</p>
-        <div class="list" id="trashList"></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="status"><div class="toast" id="toast"></div></div>
-</div>
 
 <script>
 (() => {
   "use strict";
-
   const $ = (id) => document.getElementById(id);
+
   const editor = $("editor");
   const fileName = $("fileName");
   const toast = $("toast");
@@ -419,7 +427,6 @@
   const btnSave = $("btnSave");
   const btnSaveAs = $("btnSaveAs");
   const btnOpen = $("btnOpen");
-  const btnOpenTop = $("btnOpenTop");
   const btnPrint = $("btnPrint");
   const btnTrash = $("btnTrash");
 
@@ -441,9 +448,9 @@
   const btnP = $("btnP");
   const btnBullets = $("btnBullets");
 
-  const KEY_DOCS = "wordstudio_docs_v2";
-  const KEY_TRASH = "wordstudio_trash_v2";
-  const KEY_LAST = "wordstudio_last_open_v2";
+  const KEY_DOCS = "wordstudio_docs_v3";
+  const KEY_TRASH = "wordstudio_trash_v3";
+  const KEY_LAST = "wordstudio_last_open_v3";
 
   const nowISO = () => new Date().toISOString();
   const fmtDate = (iso) => {
@@ -466,7 +473,7 @@
   const getHTML = () => editor.innerHTML || "";
   const setHTML = (html) => { editor.innerHTML = html || "<p></p>"; };
 
-  // --- FOCUS/SELECTION robust ---
+  // Focus robusto
   const hardFocusEditor = () => {
     editor.focus({ preventScroll:true });
     try{
@@ -485,7 +492,7 @@
   editor.addEventListener("pointerdown", () => hardFocusEditor(), { passive:true });
   editor.addEventListener("click", () => hardFocusEditor());
 
-  // --- Toast ---
+  // Toast
   let toastTimer = null;
   const showToast = (msg) => {
     toast.textContent = msg;
@@ -494,7 +501,7 @@
     toastTimer = setTimeout(() => toast.classList.remove("show"), 1600);
   };
 
-  // --- Docs ---
+  // Storage docs
   const getDocs = () => loadJSON(KEY_DOCS, []);
   const setDocs = (arr) => saveJSON(KEY_DOCS, arr);
 
@@ -558,13 +565,13 @@
     return true;
   };
 
-  // --- Escape ---
+  // Escape
   const escapeHTML = (str) => String(str).replace(/[&<>"']/g, s => ({
     "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
   }[s]));
   const escapeAttr = (str) => String(str).replace(/"/g, "&quot;");
 
-  // --- Modals ---
+  // Modals
   const showModal = (el) => { el.classList.add("show"); el.setAttribute("aria-hidden","false"); };
   const hideModal = (el) => { el.classList.remove("show"); el.setAttribute("aria-hidden","true"); };
 
@@ -651,4 +658,120 @@
     });
   };
 
-  // -
+  // execCommand formatting
+  const cmd = (name, value=null) => {
+    hardFocusEditor();
+    try{ document.execCommand(name, false, value); }catch(e){}
+    hardFocusEditor();
+  };
+
+  const setChip = (el, on) => el.classList.toggle("on", !!on);
+  const syncStates = () => {
+    try{
+      setChip(btnBold, document.queryCommandState("bold"));
+      setChip(btnItalic, document.queryCommandState("italic"));
+      setChip(btnUnderline, document.queryCommandState("underline"));
+      setChip(btnStrike, document.queryCommandState("strikeThrough"));
+    }catch(e){}
+  };
+  editor.addEventListener("keyup", syncStates);
+  editor.addEventListener("mouseup", syncStates);
+  editor.addEventListener("touchend", syncStates, { passive:true });
+
+  // Press helper (evita problemi tap WebView)
+  const onPress = (el, handler) => {
+    const run = (e) => { e.preventDefault(); e.stopPropagation(); handler(); };
+    el.addEventListener("pointerup", run);
+    el.addEventListener("click", run);
+  };
+
+  // File actions (tutti in toolbar)
+  onPress(btnSave, () => {
+    upsertDoc(getCurrentName(), getHTML());
+    showToast("Salvato");
+  });
+
+  onPress(btnSaveAs, () => {
+    const name = prompt("Nome documento:", getCurrentName());
+    if (name === null) return;
+    const n = normalizeName(name);
+    fileName.value = n;
+    upsertDoc(n, getHTML());
+    showToast("Salvato con nome");
+  });
+
+  onPress(btnOpen, () => { renderDocs(); showModal(openModal); });
+  onPress(btnPrint, () => { try{ window.print(); showToast("Stampa avviata"); }catch(e){ showToast("Stampa non disponibile"); } });
+  onPress(btnTrash, () => { renderTrash(); showModal(trashModal); });
+
+  onPress(btnCloseOpen, () => hideModal(openModal));
+  onPress(btnCloseTrash, () => hideModal(trashModal));
+
+  // Formatting
+  onPress(btnBold, () => { cmd("bold"); syncStates(); });
+  onPress(btnItalic, () => { cmd("italic"); syncStates(); });
+  onPress(btnUnderline, () => { cmd("underline"); syncStates(); });
+  onPress(btnStrike, () => { cmd("strikeThrough"); syncStates(); });
+
+  onPress(btnH, () => { cmd("formatBlock", "<h1>"); showToast("Titolo"); });
+  onPress(btnP, () => { cmd("formatBlock", "<p>"); showToast("Paragrafo"); });
+  onPress(btnBullets, () => { cmd("insertUnorderedList"); showToast("Elenco"); });
+
+  colorPicker.addEventListener("input", () => {
+    const c = colorPicker.value;
+    colorBox.style.background = c;
+    cmd("foreColor", c);
+  });
+
+  // Keyboard/viewport fix
+  const setKbPadding = () => {
+    const vv = window.visualViewport;
+    if (!vv) return;
+    const kb = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
+    document.documentElement.style.setProperty("--kbPad", kb + "px");
+  };
+
+  const scrollCaretIntoView = () => {
+    try{
+      const sel = window.getSelection();
+      if (!sel || sel.rangeCount === 0) return;
+      const r = sel.getRangeAt(0).cloneRange();
+      const rect = r.getBoundingClientRect();
+      if (!rect || !rect.height) return;
+
+      const vv = window.visualViewport;
+      const bottomLimit = (vv ? vv.height : window.innerHeight) - 12;
+      if (rect.bottom > bottomLimit){
+        const delta = rect.bottom - bottomLimit + 18;
+        editor.scrollTop += delta;
+      }
+    }catch(e){}
+  };
+
+  if (window.visualViewport){
+    window.visualViewport.addEventListener("resize", () => { setKbPadding(); setTimeout(scrollCaretIntoView, 60); });
+    window.visualViewport.addEventListener("scroll", () => { setKbPadding(); });
+  }
+  window.addEventListener("resize", () => { setKbPadding(); setTimeout(scrollCaretIntoView, 60); });
+  editor.addEventListener("input", () => setTimeout(scrollCaretIntoView, 0));
+
+  // Boot
+  const boot = () => {
+    if (!editor.innerHTML.trim()) editor.innerHTML = "<p></p>";
+
+    const last = localStorage.getItem(KEY_LAST);
+    if (last && openDocByName(last)){
+      showToast("Ripreso: " + last);
+    }else{
+      showToast("Pronto");
+      setTimeout(hardFocusEditor, 120);
+    }
+
+    setKbPadding();
+  };
+
+  boot();
+})();
+</script>
+</body>
+</html>
