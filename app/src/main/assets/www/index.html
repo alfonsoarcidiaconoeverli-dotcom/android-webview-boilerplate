@@ -1,31 +1,29 @@
 <!doctype html>
 <html lang="it">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#ffffff" />
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+  <meta name="theme-color" content="#ffffff"/>
   <title>WordStudio</title>
 
   <style>
     :root{
-      --bg:#ffffff;
+      --bg:#fff;
       --soft:#f7f7f8;
       --line:#e6e6e6;
-      --muted:#6b7280;
       --text:#111827;
+      --muted:#6b7280;
       --primary:#2563eb;
       --danger:#dc2626;
-
-      --shadow:0 10px 26px rgba(0,0,0,.06);
-      --shadow2:0 4px 14px rgba(0,0,0,.05);
 
       --safeTop: env(safe-area-inset-top, 0px);
       --safeBot: env(safe-area-inset-bottom, 0px);
 
-      --kbPad: 0px;
-      --adH: 60px;
-
-      --barH: 56px; /* una riga sola */
+      --barH: 56px;      /* una riga */
+      --adH: 60px;       /* spazio banner */
+      --kbPad: 0px;      /* padding tastiera */
+      --shadow: 0 10px 26px rgba(0,0,0,.06);
+      --shadow2: 0 4px 14px rgba(0,0,0,.05);
     }
 
     *{ box-sizing:border-box; }
@@ -35,14 +33,14 @@
       background:var(--bg);
       color:var(--text);
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-      -webkit-font-smoothing:antialiased;
+      -webkit-font-smoothing: antialiased;
       overscroll-behavior:none;
     }
 
     .app{ min-height:100%; display:flex; flex-direction:column; }
 
-    /* TOPBAR SOLO BRAND + NOME */
-    .topbar{
+    /* Top (solo brand + nome file) */
+    .top{
       position:sticky;
       top:0;
       z-index:30;
@@ -50,9 +48,12 @@
       border-bottom:1px solid var(--line);
       padding: calc(10px + var(--safeTop)) 12px 10px;
     }
-    .topbar-inner{
-      max-width:1100px; margin:0 auto;
-      display:flex; align-items:center; gap:12px;
+    .topInner{
+      max-width:1100px;
+      margin:0 auto;
+      display:flex;
+      align-items:center;
+      gap:12px;
     }
     .brand{ display:flex; align-items:center; gap:10px; user-select:none; }
     .logo{
@@ -63,24 +64,24 @@
       box-shadow: var(--shadow2);
       flex:0 0 auto;
     }
-    .brand-text{ line-height:1.1; }
-    .brand-text .title{ font-size:16px; font-weight:900; }
-    .brand-text .sub{ font-size:12px; color:var(--muted); font-weight:700; }
+    .brandText{ line-height:1.1; }
+    .brandText .t{ font-size:16px; font-weight:900; }
+    .brandText .s{ font-size:12px; font-weight:700; color:var(--muted); }
 
     .nameWrap{ flex:1; display:flex; justify-content:flex-end; min-width:0; }
-    .filename{
-      width:min(520px, 100%);
+    .fileName{
+      width:min(520px,100%);
       height:44px;
       border:1px solid var(--line);
       border-radius:999px;
       padding:0 14px;
+      font-weight:800;
       font-size:14px;
       outline:none;
       background:#fff;
-      box-shadow: inset 0 1px 0 rgba(0,0,0,.02);
     }
 
-    /* === TOOLBAR: UNA SOLA RIGA SCORREVOLE === */
+    /* Toolbar: una riga scorrevole */
     .barWrap{
       position:sticky;
       top: calc(68px + var(--safeTop));
@@ -88,7 +89,6 @@
       background:var(--soft);
       border-bottom:1px solid var(--line);
     }
-
     .bar{
       max-width:1100px;
       margin:0 auto;
@@ -97,7 +97,6 @@
       display:flex;
       align-items:center;
       gap:10px;
-
       overflow-x:auto;
       overflow-y:hidden;
       -webkit-overflow-scrolling: touch;
@@ -127,9 +126,7 @@
       padding:0 12px;
       font-weight:900;
       font-size:13px;
-      color:#111827;
-      display:inline-flex;
-      align-items:center;
+      color:var(--text);
       cursor:pointer;
       user-select:none;
       -webkit-tap-highlight-color: transparent;
@@ -140,25 +137,16 @@
     .btn.primary{ background:var(--primary); border-color:var(--primary); color:#fff; }
     .btn.danger{ border-color: rgba(220,38,38,.35); color:var(--danger); }
 
-    .iconBtn{
-      width:36px;
-      padding:0;
-      justify-content:center;
-      font-size:14px;
-    }
-
-    .colorDot{
+    .dot{
       width:22px;height:22px;border-radius:8px;
       border:1px solid var(--line);
       background:#111827;
       flex:0 0 auto;
     }
     input[type="color"]{
-      width:34px;height:34px;
-      border:none;background:transparent;padding:0;
+      width:34px;height:34px;border:none;background:transparent;padding:0;
       cursor:pointer; flex:0 0 auto;
     }
-
     .select{
       height:36px;
       border-radius:999px;
@@ -173,7 +161,7 @@
     .select.font{ width:190px; }
     .select.size{ width:84px; text-align-last:center; }
 
-    /* CONTENT */
+    /* Area documento */
     .content{
       flex:1;
       display:flex;
@@ -196,27 +184,28 @@
     .ruler{
       height:32px;
       border-bottom:1px solid var(--line);
-      background: linear-gradient(#fff, #fff) padding-box,
+      background:
+        linear-gradient(#fff,#fff) padding-box,
         repeating-linear-gradient(to right, rgba(0,0,0,.08) 0, rgba(0,0,0,.08) 1px, transparent 1px, transparent 22px);
       opacity:.45;
     }
+
+    /* Editor “infallibile”: textarea */
     .editor{
       flex:1;
-      padding:18px 18px 30px;
+      width:100%;
+      border:none;
       outline:none;
+      padding:18px 18px 30px;
+      resize:none;
       font-size:16px;
       line-height:1.55;
       color:var(--text);
-      word-wrap: break-word;
-      overflow:auto;
-      -webkit-overflow-scrolling: touch;
-    }
-    .editor:empty:before{
-      content:"Inizia a scrivere…";
-      color:#9ca3af;
+      background:#fff;
+      font-family: Calibri, "Segoe UI", Arial, sans-serif;
     }
 
-    /* modali semplici */
+    /* Modali */
     .modalBack{
       position:fixed; inset:0;
       background: rgba(0,0,0,.24);
@@ -257,13 +246,13 @@
       gap:10px;
       background:#fff;
     }
-    .row .meta{ min-width:0; display:flex; flex-direction:column; gap:4px; }
-    .row .name{ font-weight:900; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    .row .date{ font-size:12px; color:var(--muted); font-weight:700; }
-    .row .actions{ display:flex; gap:8px; flex:0 0 auto; }
+    .meta{ min-width:0; display:flex; flex-direction:column; gap:4px; }
+    .name{ font-weight:900; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .date{ font-size:12px; color:var(--muted); font-weight:700; }
+    .actions{ display:flex; gap:8px; flex:0 0 auto; }
     .small{ height:36px; padding:0 12px; font-size:13px; }
 
-    /* toast */
+    /* Toast */
     .status{
       position:fixed;
       left:12px; right:12px;
@@ -289,7 +278,7 @@
     }
     .toast.show{ opacity:1; transform:translateY(0); }
 
-    /* banner fisso sotto */
+    /* Banner fisso */
     .adbar{
       position:fixed;
       left:0; right:0;
@@ -316,7 +305,7 @@
     }
 
     @media print{
-      .topbar, .barWrap, .ruler, .status, .adbar { display:none !important; }
+      .top, .barWrap, .ruler, .status, .adbar { display:none !important; }
       .content{ padding:0 !important; background:#fff !important; }
       .page{ border:none !important; box-shadow:none !important; border-radius:0 !important; }
       .editor{ padding:0 !important; }
@@ -325,310 +314,335 @@
 </head>
 
 <body>
-  <div class="app">
-    <header class="topbar">
-      <div class="topbar-inner">
-        <div class="brand">
-          <div class="logo">W</div>
-          <div class="brand-text">
-            <div class="title">WordStudio</div>
-            <div class="sub">stile Word • offline</div>
-          </div>
-        </div>
-
-        <div class="nameWrap">
-          <input id="fileName" class="filename" type="text" value="Documento" autocomplete="off" />
+<div class="app">
+  <header class="top">
+    <div class="topInner">
+      <div class="brand">
+        <div class="logo">W</div>
+        <div class="brandText">
+          <div class="t">WordStudio</div>
+          <div class="s">stile Word • offline</div>
         </div>
       </div>
-    </header>
-
-    <!-- UNA RIGA SCORREVOLE -->
-    <div class="barWrap">
-      <div class="bar" id="bar">
-        <div class="seg" aria-label="File">
-          <button class="btn primary" id="btnSave" type="button">Salva</button>
-          <button class="btn" id="btnSaveAs" type="button">Salva con nome</button>
-          <button class="btn" id="btnOpen" type="button">Apri</button>
-          <button class="btn" id="btnPrint" type="button">Stampa</button>
-          <button class="btn danger" id="btnTrash" type="button">Cestino</button>
-        </div>
-
-        <div class="seg" aria-label="Colore">
-          <span class="colorDot" id="colorDot"></span>
-          <input id="colorPicker" type="color" value="#111827" aria-label="Colore testo">
-        </div>
-
-        <div class="seg" aria-label="Font">
-          <select id="fontFamily" class="select font" aria-label="Tipo carattere">
-            <option value="Calibri, Segoe UI, Arial, sans-serif">Calibri (Word)</option>
-            <option value="Times New Roman, Times, serif">Times New Roman</option>
-            <option value="Georgia, serif">Georgia</option>
-            <option value="Arial, Helvetica, sans-serif">Arial</option>
-            <option value="Verdana, Geneva, sans-serif">Verdana</option>
-            <option value="Courier New, Courier, monospace">Courier New</option>
-          </select>
-          <select id="fontSize" class="select size" aria-label="Dimensione">
-            <option>12</option><option>14</option><option selected>16</option><option>18</option>
-            <option>20</option><option>24</option><option>28</option><option>32</option>
-          </select>
-        </div>
-
-        <div class="seg" aria-label="Stile">
-          <button class="btn iconBtn" id="btnBold" type="button"><b>B</b></button>
-          <button class="btn iconBtn" id="btnItalic" type="button"><i>I</i></button>
-          <button class="btn iconBtn" id="btnUnderline" type="button"><u>U</u></button>
-          <button class="btn iconBtn" id="btnStrike" type="button" title="Barrato"><span style="text-decoration:line-through;font-weight:900;">S</span></button>
-          <button class="btn" id="btnH" type="button">Titolo</button>
-          <button class="btn" id="btnP" type="button">Paragrafo</button>
-          <button class="btn" id="btnBullets" type="button">• Elenco</button>
-        </div>
+      <div class="nameWrap">
+        <input id="fileName" class="fileName" value="Documento" autocomplete="off"/>
       </div>
     </div>
+  </header>
 
-    <main class="content">
-      <section class="page">
-        <div class="ruler"></div>
-        <div id="editor" class="editor" contenteditable="true" spellcheck="true"></div>
-      </section>
-    </main>
+  <div class="barWrap">
+    <div class="bar" id="bar">
+      <div class="seg">
+        <button class="btn primary" id="btnSave" type="button">Salva</button>
+        <button class="btn" id="btnSaveAs" type="button">Salva con nome</button>
+        <button class="btn" id="btnOpen" type="button">Apri</button>
+        <button class="btn" id="btnPrint" type="button">Stampa</button>
+        <button class="btn danger" id="btnTrash" type="button">Cestino</button>
+      </div>
 
-    <!-- Modal Apri -->
-    <div class="modalBack" id="openModal" aria-hidden="true">
-      <div class="modal" role="dialog" aria-modal="true">
-        <div class="modalHead">
-          <div>Apri documento</div>
-          <button class="btn small" id="btnCloseOpen" type="button">Chiudi</button>
-        </div>
-        <div class="modalBody">
-          <p class="hint">I documenti vengono salvati offline su questo dispositivo.</p>
-          <div class="list" id="docList"></div>
-        </div>
+      <div class="seg">
+        <span class="dot" id="dot"></span>
+        <input id="color" type="color" value="#111827" aria-label="Colore testo">
+      </div>
+
+      <div class="seg">
+        <select id="font" class="select font" aria-label="Font">
+          <option value='Calibri, "Segoe UI", Arial, sans-serif'>Calibri (Word)</option>
+          <option value='"Times New Roman", Times, serif'>Times New Roman</option>
+          <option value='Georgia, serif'>Georgia</option>
+          <option value='Arial, Helvetica, sans-serif'>Arial</option>
+          <option value='Verdana, Geneva, sans-serif'>Verdana</option>
+          <option value='"Courier New", Courier, monospace'>Courier New</option>
+        </select>
+
+        <select id="size" class="select size" aria-label="Dimensione">
+          <option>12</option><option>14</option><option selected>16</option><option>18</option>
+          <option>20</option><option>24</option><option>28</option><option>32</option>
+        </select>
+      </div>
+
+      <div class="seg">
+        <button class="btn" id="btnB" type="button"><b>B</b></button>
+        <button class="btn" id="btnI" type="button"><i>I</i></button>
+        <button class="btn" id="btnU" type="button"><u>U</u></button>
+        <button class="btn" id="btnS" type="button"><span style="text-decoration:line-through;font-weight:900;">S</span></button>
       </div>
     </div>
-
-    <!-- Modal Cestino -->
-    <div class="modalBack" id="trashModal" aria-hidden="true">
-      <div class="modal" role="dialog" aria-modal="true">
-        <div class="modalHead">
-          <div>Cestino</div>
-          <button class="btn small" id="btnCloseTrash" type="button">Chiudi</button>
-        </div>
-        <div class="modalBody">
-          <p class="hint">Ripristina o elimina definitivamente.</p>
-          <div class="list" id="trashList"></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="status"><div class="toast" id="toast"></div></div>
   </div>
 
-  <div class="adbar">
-    <div class="adbox">Spazio banner AdMob (fisso)</div>
+  <main class="content">
+    <section class="page">
+      <div class="ruler"></div>
+      <textarea id="editor" class="editor" placeholder="Inizia a scrivere…"></textarea>
+    </section>
+  </main>
+
+  <!-- Modal Apri -->
+  <div class="modalBack" id="openModal" aria-hidden="true">
+    <div class="modal">
+      <div class="modalHead">
+        <div>Apri documento</div>
+        <button class="btn small" id="closeOpen" type="button">Chiudi</button>
+      </div>
+      <div class="modalBody">
+        <p class="hint">Documenti salvati offline su questo dispositivo.</p>
+        <div class="list" id="docList"></div>
+      </div>
+    </div>
   </div>
+
+  <!-- Modal Cestino -->
+  <div class="modalBack" id="trashModal" aria-hidden="true">
+    <div class="modal">
+      <div class="modalHead">
+        <div>Cestino</div>
+        <button class="btn small" id="closeTrash" type="button">Chiudi</button>
+      </div>
+      <div class="modalBody">
+        <p class="hint">Ripristina o elimina definitivamente.</p>
+        <div class="list" id="trashList"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="status"><div class="toast" id="toast"></div></div>
+</div>
+
+<div class="adbar">
+  <div class="adbox">Spazio banner AdMob (fisso)</div>
+</div>
 
 <script>
 (() => {
   "use strict";
   const $ = (id) => document.getElementById(id);
 
-  const editor = $("editor");
-  const fileName = $("fileName");
-  const toast = $("toast");
+  /* ===== Tastiera: evita che copra il testo ===== */
+  function setKbPad(px){
+    const v = Math.max(0, Math.min(px, 600));
+    document.documentElement.style.setProperty("--kbPad", v + "px");
+  }
+  function updateKb(){
+    const vv = window.visualViewport;
+    if(!vv){ setKbPad(0); return; }
+    const diff = Math.round(window.innerHeight - vv.height - (vv.offsetTop || 0));
+    setKbPad(diff > 0 ? diff : 0);
+  }
+  window.addEventListener("resize", updateKb, {passive:true});
+  if(window.visualViewport){
+    window.visualViewport.addEventListener("resize", updateKb, {passive:true});
+    window.visualViewport.addEventListener("scroll", updateKb, {passive:true});
+  }
+  updateKb();
 
-  const btnSave = $("btnSave");
-  const btnSaveAs = $("btnSaveAs");
-  const btnOpen = $("btnOpen");
+  /* ===== Tap “infallibile” ===== */
+  function tap(el, fn){
+    const run = (e) => { try{ e.preventDefault(); e.stopPropagation(); }catch(_){} fn(); };
+    el.addEventListener("pointerdown", run, {passive:false});
+    el.addEventListener("touchstart", run, {passive:false});
+    el.addEventListener("click", run, {passive:false});
+  }
+
+  /* ===== Elementi ===== */
+  const fileName = $("fileName");
+  const editor   = $("editor");
+  const toast    = $("toast");
+
+  const btnSave  = $("btnSave");
+  const btnSaveAs= $("btnSaveAs");
+  const btnOpen  = $("btnOpen");
   const btnPrint = $("btnPrint");
   const btnTrash = $("btnTrash");
 
   const openModal = $("openModal");
-  const trashModal = $("trashModal");
-  const btnCloseOpen = $("btnCloseOpen");
-  const btnCloseTrash = $("btnCloseTrash");
-  const docList = $("docList");
+  const trashModal= $("trashModal");
+  const closeOpen = $("closeOpen");
+  const closeTrash= $("closeTrash");
+  const docList   = $("docList");
   const trashList = $("trashList");
 
-  const colorPicker = $("colorPicker");
-  const colorDot = $("colorDot");
-  const fontFamily = $("fontFamily");
-  const fontSize = $("fontSize");
+  const color = $("color");
+  const dot   = $("dot");
+  const font  = $("font");
+  const size  = $("size");
 
-  const btnBold = $("btnBold");
-  const btnItalic = $("btnItalic");
-  const btnUnderline = $("btnUnderline");
-  const btnStrike = $("btnStrike");
-  const btnH = $("btnH");
-  const btnP = $("btnP");
-  const btnBullets = $("btnBullets");
+  const btnB = $("btnB");
+  const btnI = $("btnI");
+  const btnU = $("btnU");
+  const btnS = $("btnS");
 
-  const KEY_DOCS  = "wordstudio_docs_v5";
-  const KEY_TRASH = "wordstudio_trash_v5";
-  const KEY_LAST  = "wordstudio_last_open_v5";
-  const KEY_PREFS = "wordstudio_prefs_v5";
+  /* ===== Storage keys ===== */
+  const KEY_DOCS  = "ws_docs_v1";
+  const KEY_TRASH = "ws_trash_v1";
+  const KEY_LAST  = "ws_last_v1";
+  const KEY_PREFS = "ws_prefs_v1";
 
-  /* Tastiera: evita che copra il testo */
-  const setKbPad = (px) => {
-    const v = Math.max(0, Math.min(px, 600));
-    document.documentElement.style.setProperty("--kbPad", v + "px");
-  };
-  const updateFromVisualViewport = () => {
-    const vv = window.visualViewport;
-    if (!vv) { setKbPad(0); return; }
-    const diff = Math.round(window.innerHeight - vv.height - (vv.offsetTop || 0));
-    setKbPad(diff > 0 ? diff : 0);
-  };
-  window.addEventListener("resize", updateFromVisualViewport, { passive:true });
-  if (window.visualViewport){
-    window.visualViewport.addEventListener("resize", updateFromVisualViewport, { passive:true });
-    window.visualViewport.addEventListener("scroll", updateFromVisualViewport, { passive:true });
-  }
-  updateFromVisualViewport();
-
-  /* Click “infallibile” WebView */
-  function wireTap(el, fn){
-    const run = (e) => {
-      try{ e.preventDefault(); e.stopPropagation(); }catch(_){}
-      fn();
-    };
-    el.addEventListener("pointerdown", run, { passive:false });
-    el.addEventListener("click", run, { passive:false });
-  }
-
-  /* Focus editor */
-  const hardFocusEditor = () => {
-    editor.focus({ preventScroll:true });
-    try{
-      const sel = window.getSelection();
-      if (sel && sel.rangeCount === 0){
-        const r = document.createRange();
-        r.selectNodeContents(editor);
-        r.collapse(false);
-        sel.removeAllRanges();
-        sel.addRange(r);
-      }
-    }catch(_){}
-  };
-  editor.addEventListener("pointerdown", () => hardFocusEditor(), { passive:true });
-  editor.addEventListener("click", () => hardFocusEditor());
-
-  /* Toast */
-  let toastTimer = null;
-  const showToast = (msg) => {
+  /* ===== Helpers ===== */
+  let tmr = null;
+  function showToast(msg){
     toast.textContent = msg;
     toast.classList.add("show");
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => toast.classList.remove("show"), 1600);
-  };
+    clearTimeout(tmr);
+    tmr = setTimeout(()=>toast.classList.remove("show"), 1600);
+  }
 
-  /* JSON storage */
-  const loadJSON = (k, fallback) => {
+  function loadJSON(k, fallback){
     try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : fallback; }
     catch(_){ return fallback; }
-  };
-  const saveJSON = (k, val) => localStorage.setItem(k, JSON.stringify(val));
+  }
+  function saveJSON(k, v){ localStorage.setItem(k, JSON.stringify(v)); }
 
-  const normalizeName = (name) => (name || "").trim().replace(/\s+/g, " ").slice(0, 60) || "Documento";
-  const getCurrentName = () => normalizeName(fileName.value);
-
-  const getHTML = () => editor.innerHTML || "";
-  const setHTML = (html) => { editor.innerHTML = html || "<p><br></p>"; };
-
-  const nowISO = () => new Date().toISOString();
-  const fmtDate = (iso) => {
+  function normalizeName(n){
+    return (n||"").trim().replace(/\s+/g," ").slice(0,60) || "Documento";
+  }
+  function nowISO(){ return new Date().toISOString(); }
+  function fmtDate(iso){
     try{
       const d = new Date(iso);
-      return d.toLocaleString("it-IT", { year:"numeric", month:"2-digit", day:"2-digit", hour:"2-digit", minute:"2-digit" });
+      return d.toLocaleString("it-IT",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"});
     }catch(_){ return iso; }
-  };
+  }
 
-  const escapeHTML = (str) => String(str).replace(/[&<>"']/g, s => ({
-    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
-  }[s]));
-  const escapeAttr = (str) => String(str).replace(/"/g, "&quot;");
+  function getDocs(){ return loadJSON(KEY_DOCS, []); }
+  function setDocs(a){ saveJSON(KEY_DOCS, a); }
+  function getTrash(){ return loadJSON(KEY_TRASH, []); }
+  function setTrash(a){ saveJSON(KEY_TRASH, a); }
 
-  /* docs */
-  const getDocs = () => loadJSON(KEY_DOCS, []);
-  const setDocs = (arr) => saveJSON(KEY_DOCS, arr);
-  const getTrash = () => loadJSON(KEY_TRASH, []);
-  const setTrash = (arr) => saveJSON(KEY_TRASH, arr);
+  function getCurrentName(){ return normalizeName(fileName.value); }
 
-  const upsertDoc = (name, html) => {
+  /* ===== Modal ===== */
+  function showModal(el){ el.classList.add("show"); el.setAttribute("aria-hidden","false"); }
+  function hideModal(el){ el.classList.remove("show"); el.setAttribute("aria-hidden","true"); }
+  [openModal, trashModal].forEach(m => m.addEventListener("click", (e)=>{ if(e.target===m) hideModal(m); }));
+
+  /* ===== Save/Open/Trash ===== */
+  function upsertDoc(name, text){
     const docs = getDocs();
     const n = normalizeName(name);
     const idx = docs.findIndex(d => d.name.toLowerCase() === n.toLowerCase());
-    const entry = { name:n, html, updatedAt: nowISO() };
-    if (idx >= 0) docs[idx] = entry; else docs.unshift(entry);
+    const entry = { name:n, text:text||"", updatedAt: nowISO() };
+    if(idx >= 0) docs[idx] = entry; else docs.unshift(entry);
     setDocs(docs);
     localStorage.setItem(KEY_LAST, n);
-  };
+  }
 
-  const openDocByName = (name) => {
+  function openDoc(name){
     const n = normalizeName(name);
-    const doc = getDocs().find(d => d.name.toLowerCase() === n.toLowerCase());
-    if (!doc) return false;
-    fileName.value = doc.name;
-    setHTML(doc.html);
-    localStorage.setItem(KEY_LAST, doc.name);
-    setTimeout(hardFocusEditor, 60);
+    const d = getDocs().find(x => x.name.toLowerCase() === n.toLowerCase());
+    if(!d) return false;
+    fileName.value = d.name;
+    editor.value = d.text || "";
+    localStorage.setItem(KEY_LAST, d.name);
+    setTimeout(()=>editor.focus(), 80);
     return true;
-  };
+  }
 
-  const moveToTrash = (name) => {
+  function moveToTrash(name){
     const n = normalizeName(name);
     const docs = getDocs();
     const idx = docs.findIndex(d => d.name.toLowerCase() === n.toLowerCase());
-    if (idx < 0) return false;
-    const [removed] = docs.splice(idx, 1);
+    if(idx < 0) return false;
+    const [removed] = docs.splice(idx,1);
     setDocs(docs);
-
-    const trash = getTrash();
-    trash.unshift({ ...removed, deletedAt: nowISO() });
-    setTrash(trash);
+    const tr = getTrash();
+    tr.unshift({ ...removed, deletedAt: nowISO() });
+    setTrash(tr);
     return true;
-  };
+  }
 
-  const restoreFromTrash = (name) => {
+  function restore(name){
     const n = normalizeName(name);
-    const trash = getTrash();
-    const idx = trash.findIndex(d => d.name.toLowerCase() === n.toLowerCase());
-    if (idx < 0) return false;
-    const [rest] = trash.splice(idx, 1);
-    setTrash(trash);
-    upsertDoc(rest.name, rest.html);
+    const tr = getTrash();
+    const idx = tr.findIndex(d => d.name.toLowerCase() === n.toLowerCase());
+    if(idx < 0) return false;
+    const [rest] = tr.splice(idx,1);
+    setTrash(tr);
+    upsertDoc(rest.name, rest.text);
     return true;
-  };
+  }
 
-  const deleteForever = (name) => {
+  function deleteForever(name){
     const n = normalizeName(name);
-    const trash = getTrash();
-    const idx = trash.findIndex(d => d.name.toLowerCase() === n.toLowerCase());
-    if (idx < 0) return false;
-    trash.splice(idx, 1);
-    setTrash(trash);
+    const tr = getTrash();
+    const idx = tr.findIndex(d => d.name.toLowerCase() === n.toLowerCase());
+    if(idx < 0) return false;
+    tr.splice(idx,1);
+    setTrash(tr);
     return true;
-  };
+  }
 
-  /* modals */
-  const showModal = (el) => { el.classList.add("show"); el.setAttribute("aria-hidden","false"); };
-  const hideModal = (el) => { el.classList.remove("show"); el.setAttribute("aria-hidden","true"); };
-  [openModal, trashModal].forEach(mod => mod.addEventListener("click", (e) => { if (e.target === mod) hideModal(mod); }));
-
-  const renderDocs = () => {
+  function renderDocs(){
     const docs = getDocs();
     docList.innerHTML = "";
-    if (!docs.length){
-      docList.innerHTML = `<div class="row"><div class="meta"><div class="name">Nessun documento</div><div class="date">Salva un documento per vederlo qui.</div></div></div>`;
+    if(!docs.length){
+      docList.innerHTML = `<div class="row"><div class="meta"><div class="name">Nessun documento</div><div class="date">Salva per vederli qui.</div></div></div>`;
       return;
     }
-    for (const d of docs){
+    docs.forEach(d => {
       const row = document.createElement("div");
       row.className = "row";
       row.innerHTML = `
         <div class="meta">
-          <div class="name">${escapeHTML(d.name)}</div>
-          <div class="date">Aggiornato: ${escapeHTML(fmtDate(d.updatedAt))}</div>
+          <div class="name"></div>
+          <div class="date"></div>
         </div>
         <div class="actions">
-          <button class="btn small primary" data-open="${escapeAttr(d.name)}" type="button">Apri</button>
-          <button class="btn small danger" data-trash="${esc
+          <button class="btn small primary" type="button">Apri</button>
+          <button class="btn small danger" type="button">Elimina</button>
+        </div>`;
+      row.querySelector(".name").textContent = d.name;
+      row.querySelector(".date").textContent = "Aggiornato: " + fmtDate(d.updatedAt);
+      const [bOpen, bDel] = row.querySelectorAll("button");
+      tap(bOpen, () => { openDoc(d.name); hideModal(openModal); showToast("Documento aperto"); });
+      tap(bDel,  () => { if(moveToTrash(d.name)){ renderDocs(); showToast("Spostato nel cestino"); }});
+      docList.appendChild(row);
+    });
+  }
+
+  function renderTrash(){
+    const tr = getTrash();
+    trashList.innerHTML = "";
+    if(!tr.length){
+      trashList.innerHTML = `<div class="row"><div class="meta"><div class="name">Cestino vuoto</div><div class="date">Nessun elemento eliminato.</div></div></div>`;
+      return;
+    }
+    tr.forEach(d => {
+      const row = document.createElement("div");
+      row.className = "row";
+      row.innerHTML = `
+        <div class="meta">
+          <div class="name"></div>
+          <div class="date"></div>
+        </div>
+        <div class="actions">
+          <button class="btn small" type="button">Ripristina</button>
+          <button class="btn small danger" type="button">Elimina</button>
+        </div>`;
+      row.querySelector(".name").textContent = d.name;
+      row.querySelector(".date").textContent = "Eliminato: " + fmtDate(d.deletedAt || d.updatedAt);
+      const [bRes, bDel] = row.querySelectorAll("button");
+      tap(bRes, () => { if(restore(d.name)){ renderTrash(); showToast("Ripristinato"); }});
+      tap(bDel, () => { if(deleteForever(d.name)){ renderTrash(); showToast("Eliminato definitivamente"); }});
+      trashList.appendChild(row);
+    });
+  }
+
+  /* ===== Formattazione (textarea) ===== */
+  function loadPrefs(){
+    return loadJSON(KEY_PREFS, {
+      color:"#111827",
+      font: font.value,
+      size: String(size.value || "16"),
+      bold:false, italic:false, underline:false, strike:false
+    });
+  }
+  function savePrefs(p){ saveJSON(KEY_PREFS, p); }
+
+  function applyPrefs(p){
+    dot.style.background = p.color;
+    color.value = p.color;
+    font.value = p.font;
+    size.value = p.size;
+
+    editor.style.color = p.color;
+    editor.st
