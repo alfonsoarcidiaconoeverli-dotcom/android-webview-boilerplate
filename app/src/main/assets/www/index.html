@@ -2,678 +2,720 @@
 <html lang="it">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#ffffff" />
   <title>WordStudio</title>
   <style>
     :root{
-      --bg:#f3f4f6;
-      --surface:#ffffff;
-      --stroke:#e5e7eb;
-      --text:#111827;
+      --bg:#ffffff;
+      --panel:#ffffff;
+      --line:#e6e6e6;
       --muted:#6b7280;
-      --blue:#2563eb;
-      --shadow: 0 10px 30px rgba(0,0,0,.08);
-      --ui: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-      --doc: "Calibri","Segoe UI",Roboto,Arial,sans-serif;
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      font-family:var(--ui);
-      background:var(--bg);
-      color:var(--text);
-      -webkit-tap-highlight-color: transparent;
+      --text:#111827;
+      --primary:#2563eb;
+      --danger:#dc2626;
+      --radius:14px;
+      --shadow:0 8px 22px rgba(0,0,0,.06);
+      --shadow2:0 4px 14px rgba(0,0,0,.05);
+      --btnh:44px;
+      --gap:10px;
+      --maxw:1100px;
+      --safeTop: env(safe-area-inset-top, 0px);
+      --safeBot: env(safe-area-inset-bottom, 0px);
     }
 
-    /* FIX: header fixed (no sticky), always clickable */
-    .top{
-      position:fixed;
-      left:0; right:0; top:0;
-      z-index:9999;
-      background:var(--surface);
-      border-bottom:1px solid var(--stroke);
-      pointer-events:auto;
-      transform: translateZ(0); /* stabilizza layer touch su WebView */
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      -webkit-font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
+      overscroll-behavior:none;
     }
-    .bar1{
+
+    /* IMPORTANT: niente overlay che blocca i tocchi */
+    .app{
+      min-height:100%;
+      display:flex;
+      flex-direction:column;
+      background:var(--bg);
+      pointer-events:auto;
+      touch-action:manipulation;
+    }
+
+    /* Header stile Word (pulito bianco) */
+    .topbar{
+      position:sticky;
+      top:0;
+      z-index:20;
+      background:var(--panel);
+      border-bottom:1px solid var(--line);
+      padding: calc(10px + var(--safeTop)) 12px 10px;
+    }
+    .topbar-inner{
+      max-width:var(--maxw);
+      margin:0 auto;
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+    .brand{
       display:flex;
       align-items:center;
       gap:10px;
-      padding:10px 12px;
-      max-width:1200px;
-      margin:0 auto;
-      flex-wrap:wrap;
+      min-width: 160px;
+      user-select:none;
     }
-    .brand{display:flex; align-items:center; gap:10px; flex:0 0 auto;}
     .logo{
-      width:34px; height:34px;
-      border-radius:10px;
-      background:var(--blue);
-      color:#fff;
-      display:grid; place-items:center;
-      font-weight:900;
+      width:36px;height:36px;border-radius:10px;
+      background:var(--primary);
+      display:grid;place-items:center;
+      color:#fff;font-weight:800;
+      box-shadow: var(--shadow2);
+      flex:0 0 auto;
     }
-    .title{display:flex; flex-direction:column; line-height:1.05;}
-    .title b{font-size:13px}
-    .title small{color:var(--muted); font-weight:700; font-size:11px}
+    .brand-text{
+      line-height:1.1;
+    }
+    .brand-text .title{
+      font-size:16px;
+      font-weight:800;
+    }
+    .brand-text .sub{
+      font-size:12px;
+      color:var(--muted);
+      font-weight:600;
+    }
 
-    .filebox{
-      flex:1 1 auto;
-      display:flex; align-items:center; gap:8px;
-      flex-wrap:wrap;
+    .filebar{
+      flex:1;
+      display:flex;
+      gap:10px;
+      align-items:center;
       justify-content:flex-end;
-      min-width:260px;
+      min-width: 0;
     }
     .filename{
-      flex:1 1 220px;
-      min-width:160px;
-      border:1px solid var(--stroke);
-      border-radius:10px;
-      padding:9px 10px;
-      font-weight:800;
+      flex:1;
+      min-width: 0;
+      height: var(--btnh);
+      border:1px solid var(--line);
+      border-radius: 999px;
+      padding: 0 14px;
+      font-size:14px;
       outline:none;
       background:#fff;
+      box-shadow: inset 0 1px 0 rgba(0,0,0,.02);
     }
     .filename:focus{
-      border-color: rgba(37,99,235,.55);
-      box-shadow: 0 0 0 3px rgba(37,99,235,.15);
+      border-color: rgba(37,99,235,.45);
+      box-shadow: 0 0 0 4px rgba(37,99,235,.12);
     }
 
     .btn{
-      border:1px solid var(--stroke);
+      height: var(--btnh);
+      border-radius: 999px;
+      border:1px solid var(--line);
       background:#fff;
-      border-radius:10px;
-      padding:9px 10px;
-      font-weight:900;
-      cursor:pointer;
+      padding: 0 14px;
+      font-weight:800;
+      font-size:14px;
+      color:#111827;
       display:inline-flex;
       align-items:center;
       gap:8px;
-      white-space:nowrap;
-      touch-action: manipulation;
+      cursor:pointer;
       user-select:none;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+      pointer-events:auto;
     }
-    .btn:active{transform:scale(.99)}
-    .btn.primary{background:var(--blue); border-color:var(--blue); color:#fff;}
-    .btn.danger{border-color:#fecaca; background:#fff; color:#b91c1c;}
+    .btn:active{ transform: translateY(1px); }
+    .btn.primary{
+      background: var(--primary);
+      border-color: var(--primary);
+      color:#fff;
+    }
+    .btn.danger{
+      border-color: rgba(220,38,38,.35);
+      color: var(--danger);
+      background:#fff;
+    }
+    .btn.ghost{
+      background:#fff;
+    }
 
-    .bar2{
-      border-top:1px solid #f3f4f6;
-      padding:8px 12px;
-    }
-    .ribbon{
-      max-width:1200px;
-      margin:0 auto;
+    /* Riga comandi */
+    .toolbar{
+      max-width:var(--maxw);
+      margin: 10px auto 0;
+      padding: 0 12px 10px;
       display:flex;
-      gap:10px;
       flex-wrap:wrap;
+      gap:10px;
       align-items:center;
+      pointer-events:auto;
+      touch-action: manipulation;
     }
     .group{
       display:flex;
-      gap:8px;
+      gap:10px;
       align-items:center;
       flex-wrap:wrap;
-      padding:6px;
-      border:1px solid var(--stroke);
-      border-radius:12px;
       background:#fff;
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      padding:10px;
+      box-shadow: var(--shadow2);
     }
-    select, input[type="number"], input[type="color"]{
-      border:1px solid var(--stroke);
-      border-radius:10px;
-      padding:8px 9px;
-      font-weight:900;
+    .chip{
+      height:38px;
+      border-radius: 12px;
+      border:1px solid var(--line);
       background:#fff;
-      outline:none;
-      touch-action: manipulation;
-    }
-    input[type="number"]{width:72px; text-align:center}
-    input[type="color"]{width:44px; height:40px; padding:4px}
-    .tool{
-      border:1px solid var(--stroke);
-      background:#fff;
-      border-radius:10px;
-      padding:8px 10px;
-      font-weight:900;
+      padding: 0 12px;
+      font-weight:800;
       cursor:pointer;
-      min-width:40px;
-      text-align:center;
+      -webkit-tap-highlight-color: transparent;
       touch-action: manipulation;
-      user-select:none;
-    }
-    .tool.active{
-      border-color: rgba(37,99,235,.55);
-      box-shadow: 0 0 0 3px rgba(37,99,235,.12);
-    }
-
-    /* FIX: space for fixed header */
-    .spacer{
-      height: 136px; /* calcolato per bar1+bar2 su mobile */
-    }
-    @media (min-width: 720px){
-      .spacer{ height: 118px; }
-    }
-
-    .main{
-      max-width:1200px;
-      margin:0 auto;
-      padding:14px 12px 22px;
-      display:flex;
-      justify-content:center;
-      position:relative;
-      z-index:1;
-    }
-    .paper{
-      width:min(900px, 100%);
-      background:#fff;
-      border:1px solid var(--stroke);
-      border-radius:16px;
-      box-shadow: var(--shadow);
-      padding:26px 22px;
-    }
-    #editor{
-      min-height:72vh;
-      outline:none;
-      font-family:var(--doc);
-      font-size:16px;
-      line-height:1.65;
-      color:#111827;
-      word-wrap:break-word;
-    }
-    #editor:empty:before{
-      content: attr(data-placeholder);
-      color:#9ca3af;
-      font-weight:700;
-    }
-
-    .status{
-      max-width:1200px;
-      margin:0 auto;
-      padding:0 12px 16px;
-      display:flex;
-      justify-content:space-between;
-      gap:10px;
-      flex-wrap:wrap;
-      color:var(--muted);
-      font-weight:900;
-      font-size:12px;
-      position:relative;
-      z-index:1;
-    }
-    .pill{
+      pointer-events:auto;
       display:inline-flex;
       align-items:center;
       gap:8px;
-      background:#fff;
-      border:1px solid var(--stroke);
-      padding:6px 10px;
-      border-radius:999px;
     }
-    .dot{width:8px;height:8px;border-radius:999px;background:#22c55e;}
-    .dot.dirty{background:#f59e0b;}
+    .chip:active{ transform: translateY(1px); }
+    .chip.on{
+      border-color: rgba(37,99,235,.4);
+      box-shadow: 0 0 0 4px rgba(37,99,235,.10);
+    }
+    .colorbox{
+      width:30px;height:30px;border-radius:10px;
+      border:1px solid var(--line);
+      background:#111827;
+      display:inline-block;
+    }
+    input[type="color"]{
+      width:44px;height:38px;
+      border:none;
+      background:transparent;
+      padding:0;
+    }
 
-    /* Modal FIX: when hidden it must NOT intercept touches */
-    .backdrop{
-      position:fixed; inset:0;
-      background:rgba(0,0,0,.35);
-      display:none;
-      align-items:center; justify-content:center;
-      padding:14px;
-      z-index:10000;
-      pointer-events:none;
+    /* Editor area */
+    .content{
+      flex:1;
+      display:flex;
+      justify-content:center;
+      padding: 10px 12px calc(16px + var(--safeBot));
+      background:#f7f7f8;
     }
-    .backdrop.show{display:flex; pointer-events:auto;}
-    .modal{
-      width:min(640px, 100%);
+    .page{
+      width:100%;
+      max-width: var(--maxw);
       background:#fff;
-      border:1px solid var(--stroke);
-      border-radius:16px;
-      box-shadow: 0 20px 70px rgba(0,0,0,.2);
+      border:1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      display:flex;
+      flex-direction:column;
+      min-height: 62vh;
+    }
+
+    .ruler{
+      height:38px;
+      border-bottom:1px solid var(--line);
+      background: linear-gradient(#fff, #fff) padding-box,
+                  repeating-linear-gradient(to right, rgba(0,0,0,.08) 0, rgba(0,0,0,.08) 1px, transparent 1px, transparent 22px);
+      opacity:.45;
+    }
+
+    .editor{
+      flex:1;
+      padding: 18px 18px 30px;
+      outline:none;
+      font-size: 16px;
+      line-height: 1.55;
+      color: var(--text);
+      word-wrap: break-word;
+      overflow:auto;
+      -webkit-overflow-scrolling: touch;
+
+      /* CRUCIALE: tocco e input */
+      pointer-events:auto;
+      touch-action: manipulation;
+      user-select:text;
+    }
+    .editor:empty:before{
+      content:"Inizia a scrivere…";
+      color:#9ca3af;
+    }
+
+    /* Modali (senza overlay che blocca i click sui bottoni quando chiuse) */
+    .modalBack{
+      position:fixed;
+      inset:0;
+      background: rgba(0,0,0,.24);
+      display:none;
+      align-items:flex-end;
+      justify-content:center;
+      padding: 18px 12px calc(18px + var(--safeBot));
+      z-index:50;
+      pointer-events:auto;
+    }
+    .modalBack.show{ display:flex; }
+    .modal{
+      width:min(680px, 100%);
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
       overflow:hidden;
     }
-    .mhead{
-      padding:12px 14px;
-      border-bottom:1px solid var(--stroke);
+    .modalHead{
+      padding: 14px 14px 10px;
+      border-bottom:1px solid var(--line);
       display:flex;
-      justify-content:space-between;
       align-items:center;
+      justify-content:space-between;
       gap:10px;
-      font-weight:1000;
     }
-    .mbody{padding:14px; display:flex; flex-direction:column; gap:10px;}
-    .mfoot{
-      padding:12px 14px;
-      border-top:1px solid var(--stroke);
-      display:flex;
-      justify-content:flex-end;
-      gap:10px;
-      flex-wrap:wrap;
-    }
-    .row{display:flex; gap:10px; align-items:center; flex-wrap:wrap;}
-    .row label{min-width:90px; color:var(--muted); font-weight:900; font-size:12px}
-    .row input{
-      flex:1 1 280px;
-      border:1px solid var(--stroke);
-      border-radius:10px;
-      padding:10px 10px;
+    .modalHead .h{
       font-weight:900;
-      outline:none;
+      font-size:16px;
+    }
+    .modalBody{
+      padding: 12px 14px 14px;
     }
     .list{
-      border:1px solid var(--stroke);
-      border-radius:12px;
-      overflow:auto;
-      max-height:42vh;
-    }
-    .item{
-      padding:10px 10px;
       display:flex;
-      justify-content:space-between;
-      align-items:center;
+      flex-direction:column;
       gap:10px;
-      border-top:1px solid var(--stroke);
-      cursor:pointer;
+      max-height: 45vh;
+      overflow:auto;
+      -webkit-overflow-scrolling: touch;
     }
-    .item:first-child{border-top:0}
-    .item.sel{outline:2px solid rgba(37,99,235,.45); outline-offset:-2px}
-
-    @media (max-width: 720px){
-      .ribbon{flex-wrap:nowrap; overflow-x:auto; -webkit-overflow-scrolling:touch}
-      .ribbon::-webkit-scrollbar{height:0}
-      .group{flex-wrap:nowrap; white-space:nowrap}
+    .row{
+      border:1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      background:#fff;
+    }
+    .row .meta{
+      min-width:0;
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+    }
+    .row .name{
+      font-weight:900;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .row .date{
+      font-size:12px;
+      color: var(--muted);
+      font-weight:700;
+    }
+    .row .actions{
+      display:flex;
+      gap:8px;
+      flex:0 0 auto;
+    }
+    .small{
+      height:38px;
+      padding: 0 12px;
+      font-size:13px;
+    }
+    .hint{
+      font-size:13px;
+      color: var(--muted);
+      font-weight:650;
+      margin: 0 0 10px;
     }
 
+    /* Barra status */
+    .status{
+      position:fixed;
+      left:12px;
+      right:12px;
+      bottom: calc(12px + var(--safeBot));
+      display:flex;
+      justify-content:center;
+      pointer-events:none; /* non deve bloccare tocchi */
+      z-index:60;
+    }
+    .toast{
+      pointer-events:none;
+      background:#111827;
+      color:#fff;
+      padding:10px 14px;
+      border-radius:999px;
+      font-weight:800;
+      font-size:13px;
+      box-shadow: var(--shadow);
+      opacity:0;
+      transform: translateY(10px);
+      transition: .25s ease;
+      max-width:min(640px, 100%);
+      text-align:center;
+    }
+    .toast.show{
+      opacity:1;
+      transform: translateY(0);
+    }
+
+    /* Stampa: solo contenuto */
     @media print{
-      body{background:#fff}
-      .top,.status,.spacer{display:none !important}
-      .paper{box-shadow:none;border:none;border-radius:0;padding:0}
-      #editor{min-height:auto}
+      body{ background:#fff; }
+      .topbar, .toolbar, .ruler, .status { display:none !important; }
+      .content{ padding:0 !important; background:#fff !important; }
+      .page{ border:none !important; box-shadow:none !important; border-radius:0 !important; }
+      .editor{ padding:0 !important; }
     }
   </style>
 </head>
-
 <body>
+  <div class="app" id="app">
+    <header class="topbar">
+      <div class="topbar-inner">
+        <div class="brand">
+          <div class="logo">W</div>
+          <div class="brand-text">
+            <div class="title">WordStudio</div>
+            <div class="sub">stile Word • offline</div>
+          </div>
+        </div>
 
-  <div class="top">
-    <div class="bar1">
-      <div class="brand">
-        <div class="logo">W</div>
-        <div class="title">
-          <b>WordStudio</b>
-          <small>stile Word • offline</small>
+        <div class="filebar">
+          <input id="fileName" class="filename" type="text" value="Documento" autocomplete="off" inputmode="text" />
+          <button class="btn ghost" id="btnOpen" type="button">Apri</button>
         </div>
       </div>
 
-      <div class="filebox">
-        <input id="docName" class="filename" value="Documento" maxlength="60" />
-        <button class="btn" id="openBtn" type="button">Apri</button>
-        <button class="btn primary" id="saveBtn" type="button">Salva</button>
-        <button class="btn" id="saveAsBtn" type="button">Salva con nome</button>
-        <button class="btn" id="printBtn" type="button">Stampa</button>
-        <button class="btn danger" id="trashBtn" type="button">Cestino</button>
+      <div class="toolbar">
+        <div class="group" aria-label="File">
+          <button class="btn primary" id="btnSave" type="button">Salva</button>
+          <button class="btn" id="btnSaveAs" type="button">Salva con nome</button>
+          <button class="btn" id="btnPrint" type="button">Stampa</button>
+          <button class="btn danger" id="btnTrash" type="button">Cestino</button>
+        </div>
+
+        <div class="group" aria-label="Formattazione">
+          <span class="chip" id="btnColor" type="button" role="button" aria-label="Colore testo">
+            <span class="colorbox" id="colorBox"></span>
+            <span>Colore</span>
+          </span>
+          <input id="colorPicker" type="color" value="#111827" aria-label="Scegli colore" />
+
+          <button class="chip" id="btnBold" type="button"><b>B</b></button>
+          <button class="chip" id="btnItalic" type="button"><i>I</i></button>
+          <button class="chip" id="btnUnderline" type="button"><u>U</u></button>
+
+          <button class="chip" id="btnStrike" type="button"><span style="text-decoration:line-through;font-weight:900;">S</span></button>
+
+          <button class="chip" id="btnH" type="button">Titolo</button>
+          <button class="chip" id="btnP" type="button">Paragrafo</button>
+          <button class="chip" id="btnBullets" type="button">• Elenco</button>
+        </div>
       </div>
-    </div>
+    </header>
 
-    <div class="bar2">
-      <div class="ribbon">
-        <div class="group">
-          <select id="fontSel">
-            <option value="Calibri" selected>Calibri</option>
-            <option value="Times New Roman">Times New Roman</option>
-            <option value="Georgia">Georgia</option>
-            <option value="Arial">Arial</option>
-            <option value="Courier New">Courier New</option>
-          </select>
-          <input id="sizeSel" type="number" min="8" max="72" value="16" />
-          <input id="colorSel" type="color" value="#111827" />
+    <main class="content">
+      <section class="page">
+        <div class="ruler"></div>
+        <div id="editor" class="editor" contenteditable="true" spellcheck="true"></div>
+      </section>
+    </main>
+
+    <!-- Modal Apri -->
+    <div class="modalBack" id="openModal" aria-hidden="true">
+      <div class="modal" role="dialog" aria-modal="true" aria-label="Apri documento">
+        <div class="modalHead">
+          <div class="h">Apri documento</div>
+          <button class="btn small" id="btnCloseOpen" type="button">Chiudi</button>
         </div>
-
-        <div class="group">
-          <button class="tool" type="button" data-cmd="bold">B</button>
-          <button class="tool" type="button" data-cmd="italic"><i>I</i></button>
-          <button class="tool" type="button" data-cmd="underline"><u>U</u></button>
-          <button class="tool" type="button" data-cmd="strikeThrough">S̶</button>
-        </div>
-
-        <div class="group">
-          <select id="blockSel">
-            <option value="p">Paragrafo</option>
-            <option value="h1">Titolo 1</option>
-            <option value="h2">Titolo 2</option>
-          </select>
-          <button class="tool" type="button" data-cmd="insertUnorderedList">•</button>
-          <button class="tool" type="button" data-cmd="insertOrderedList">1.</button>
-        </div>
-
-        <div class="group">
-          <button class="tool" type="button" data-cmd="justifyLeft">⬅</button>
-          <button class="tool" type="button" data-cmd="justifyCenter">↔</button>
-          <button class="tool" type="button" data-cmd="justifyRight">➡</button>
-          <button class="tool" type="button" data-cmd="justifyFull">☰</button>
-        </div>
-
-        <div class="group">
-          <button class="tool" type="button" id="undoBtn">↩</button>
-          <button class="tool" type="button" id="redoBtn">↪</button>
-        </div>
-
-        <div class="group">
-          <button class="btn" type="button" id="exportDocBtn">DOC</button>
-          <button class="btn" type="button" id="exportTxtBtn">TXT</button>
-          <button class="btn" type="button" id="exportHtmlBtn">HTML</button>
+        <div class="modalBody">
+          <p class="hint">I documenti vengono salvati offline su questo dispositivo.</p>
+          <div class="list" id="docList"></div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- FIX spacer -->
-  <div class="spacer"></div>
-
-  <div class="main">
-    <div class="paper">
-      <div id="editor" contenteditable="true" spellcheck="true" data-placeholder="Scrivi qui..."></div>
-    </div>
-  </div>
-
-  <div class="status">
-    <div class="pill"><span id="dot" class="dot"></span><span id="saveInfo">Non salvato</span></div>
-    <div class="pill">Parole: <b id="words">0</b> • Caratteri: <b id="chars">0</b></div>
-  </div>
-
-  <!-- Modal: Save As -->
-  <div class="backdrop" id="saveAsModal">
-    <div class="modal">
-      <div class="mhead">
-        <span>Salva con nome</span>
-        <button class="btn" type="button" id="closeSaveAs">Chiudi</button>
-      </div>
-      <div class="mbody">
-        <div class="row">
-          <label>Nome file</label>
-          <input id="saveAsName" maxlength="60" />
+    <!-- Modal Cestino -->
+    <div class="modalBack" id="trashModal" aria-hidden="true">
+      <div class="modal" role="dialog" aria-modal="true" aria-label="Cestino">
+        <div class="modalHead">
+          <div class="h">Cestino</div>
+          <button class="btn small" id="btnCloseTrash" type="button">Chiudi</button>
+        </div>
+        <div class="modalBody">
+          <p class="hint">Qui trovi i documenti eliminati. Puoi ripristinarli o eliminarli definitivamente.</p>
+          <div class="list" id="trashList"></div>
         </div>
       </div>
-      <div class="mfoot">
-        <button class="btn" type="button" id="cancelSaveAs">Annulla</button>
-        <button class="btn primary" type="button" id="confirmSaveAs">Salva</button>
-      </div>
     </div>
-  </div>
 
-  <!-- Modal: Open -->
-  <div class="backdrop" id="openModal">
-    <div class="modal">
-      <div class="mhead">
-        <span>Apri documento</span>
-        <button class="btn" type="button" id="closeOpen">Chiudi</button>
-      </div>
-      <div class="mbody">
-        <div class="list" id="docsList"></div>
-      </div>
-      <div class="mfoot">
-        <button class="btn danger" type="button" id="deleteDocBtn">Elimina</button>
-        <button class="btn primary" type="button" id="openSelectedBtn">Apri</button>
-      </div>
-    </div>
+    <div class="status"><div class="toast" id="toast"></div></div>
   </div>
 
 <script>
 (() => {
-  const $ = s => document.querySelector(s);
+  "use strict";
 
-  const editor = $("#editor");
-  const docName = $("#docName");
-
-  const saveBtn = $("#saveBtn");
-  const saveAsBtn = $("#saveAsBtn");
-  const trashBtn = $("#trashBtn");
-  const printBtn = $("#printBtn");
-  const openBtn = $("#openBtn");
-
-  const exportDocBtn = $("#exportDocBtn");
-  const exportTxtBtn = $("#exportTxtBtn");
-  const exportHtmlBtn = $("#exportHtmlBtn");
-
-  const fontSel = $("#fontSel");
-  const sizeSel = $("#sizeSel");
-  const colorSel = $("#colorSel");
-  const blockSel = $("#blockSel");
-
-  const undoBtn = $("#undoBtn");
-  const redoBtn = $("#redoBtn");
-
-  const dot = $("#dot");
-  const saveInfo = $("#saveInfo");
-  const wordsEl = $("#words");
-  const charsEl = $("#chars");
-
-  const saveAsModal = $("#saveAsModal");
-  const saveAsName = $("#saveAsName");
-  const closeSaveAs = $("#closeSaveAs");
-  const cancelSaveAs = $("#cancelSaveAs");
-  const confirmSaveAs = $("#confirmSaveAs");
-
-  const openModal = $("#openModal");
-  const closeOpen = $("#closeOpen");
-  const docsList = $("#docsList");
-  const openSelectedBtn = $("#openSelectedBtn");
-  const deleteDocBtn = $("#deleteDocBtn");
-
-  const DB_KEY = "wordstudio_docs_v1";
-  const CUR_KEY = "wordstudio_current_id_v1";
-
-  let currentId = null;
-  let selectedOpenId = null;
-  let autosaveT = null;
-
-  function nowLabel(){
-    const d = new Date();
-    return d.toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"});
-  }
-  function uid(){
-    return "doc_" + Math.random().toString(16).slice(2) + "_" + Date.now().toString(16);
-  }
-  function normName(n){
-    n = (n || "Documento").trim().slice(0,60);
-    return n.length ? n : "Documento";
-  }
-
-  function dbLoad(){
+  // --- Utils ---
+  const $ = (id) => document.getElementById(id);
+  const nowISO = () => new Date().toISOString();
+  const fmtDate = (iso) => {
     try{
-      const raw = localStorage.getItem(DB_KEY);
-      if(!raw) return {docs:{}};
-      const db = JSON.parse(raw);
-      if(!db.docs) db.docs = {};
-      return db;
+      const d = new Date(iso);
+      return d.toLocaleString("it-IT", { year:"numeric", month:"2-digit", day:"2-digit", hour:"2-digit", minute:"2-digit" });
+    }catch(e){ return iso; }
+  };
+
+  // Storage keys
+  const KEY_DOCS = "wordstudio_docs_v1";
+  const KEY_TRASH = "wordstudio_trash_v1";
+  const KEY_LAST = "wordstudio_last_open_v1";
+
+  // Elements
+  const editor = $("editor");
+  const fileName = $("fileName");
+  const toast = $("toast");
+
+  const btnSave = $("btnSave");
+  const btnSaveAs = $("btnSaveAs");
+  const btnOpen = $("btnOpen");
+  const btnPrint = $("btnPrint");
+  const btnTrash = $("btnTrash");
+
+  const openModal = $("openModal");
+  const trashModal = $("trashModal");
+  const btnCloseOpen = $("btnCloseOpen");
+  const btnCloseTrash = $("btnCloseTrash");
+  const docList = $("docList");
+  const trashList = $("trashList");
+
+  const colorPicker = $("colorPicker");
+  const colorBox = $("colorBox");
+
+  const btnBold = $("btnBold");
+  const btnItalic = $("btnItalic");
+  const btnUnderline = $("btnUnderline");
+  const btnStrike = $("btnStrike");
+  const btnH = $("btnH");
+  const btnP = $("btnP");
+  const btnBullets = $("btnBullets");
+
+  // --- Touch/click reliability fixes ---
+  // (evita ghost click / problemi focus su webview mobile)
+  const hardFocusEditor = () => {
+    // contenteditable su Android a volte non prende focus se non forzi
+    editor.focus({ preventScroll: true });
+    // fallback: selection at end
+    try{
+      const sel = window.getSelection();
+      if (!sel) return;
+      if (sel.rangeCount === 0) {
+        const r = document.createRange();
+        r.selectNodeContents(editor);
+        r.collapse(false);
+        sel.removeAllRanges();
+        sel.addRange(r);
+      }
+    }catch(e){}
+  };
+
+  editor.addEventListener("pointerdown", () => {
+    // prendere focus prima di digitare
+    hardFocusEditor();
+  }, { passive: true });
+
+  // --- Toast ---
+  let toastTimer = null;
+  const showToast = (msg) => {
+    toast.textContent = msg;
+    toast.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove("show"), 1600);
+  };
+
+  // --- Data model ---
+  const loadJSON = (k, fallback) => {
+    try{
+      const v = localStorage.getItem(k);
+      if (!v) return fallback;
+      return JSON.parse(v);
     }catch(e){
-      return {docs:{}};
+      return fallback;
     }
-  }
-  function dbSave(db){
-    localStorage.setItem(DB_KEY, JSON.stringify(db));
-  }
+  };
+  const saveJSON = (k, val) => localStorage.setItem(k, JSON.stringify(val));
 
-  function setDirty(v){
-    dot.classList.toggle("dirty", !!v);
-    saveInfo.textContent = v ? "Modifiche non salvate" : ("Salvato alle " + nowLabel());
-  }
+  const getDocs = () => loadJSON(KEY_DOCS, []);
+  const setDocs = (arr) => saveJSON(KEY_DOCS, arr);
 
-  function applyEditorBaseStyle(){
-    editor.style.fontFamily = `"${fontSel.value}", Calibri, Arial, sans-serif`;
-    editor.style.fontSize = `${Math.max(8, Math.min(72, Number(sizeSel.value || 16)))}px`;
-    editor.style.color = colorSel.value || "#111827";
-  }
+  const getTrash = () => loadJSON(KEY_TRASH, []);
+  const setTrash = (arr) => saveJSON(KEY_TRASH, arr);
 
-  function updateStats(){
-    const t = (editor.innerText || "").replace(/\u00A0/g," ").trim();
-    charsEl.textContent = String(t.length);
-    wordsEl.textContent = String(t ? t.split(/\s+/).length : 0);
-  }
+  const normalizeName = (name) => (name || "").trim().replace(/\s+/g, " ").slice(0, 60) || "Documento";
 
-  function snapshot(){
-    return {
-      id: currentId,
-      name: normName(docName.value),
-      html: editor.innerHTML,
-      style: { font: fontSel.value, size: Number(sizeSel.value || 16), color: colorSel.value },
-      updatedAt: new Date().toISOString()
-    };
-  }
+  const getCurrentName = () => normalizeName(fileName.value);
 
-  function saveLocal(){
-    const db = dbLoad();
-    if(!currentId){
-      currentId = uid();
-      localStorage.setItem(CUR_KEY, currentId);
-    }
-    const s = snapshot();
-    db.docs[s.id] = s;
-    dbSave(db);
-    setDirty(false);
-  }
+  const getHTML = () => editor.innerHTML || "";
 
-  function autosave(){
-    clearTimeout(autosaveT);
-    autosaveT = setTimeout(saveLocal, 400);
-  }
+  const setHTML = (html) => {
+    editor.innerHTML = html || "";
+    // se vuoto, lascia placeholder
+  };
 
-  function loadDoc(id){
-    const db = dbLoad();
-    const d = db.docs[id];
-    if(!d) return;
+  const upsertDoc = (name, html) => {
+    const docs = getDocs();
+    const n = normalizeName(name);
+    const idx = docs.findIndex(d => d.name.toLowerCase() === n.toLowerCase());
+    const entry = { name: n, html, updatedAt: nowISO() };
+    if (idx >= 0) docs[idx] = entry;
+    else docs.unshift(entry);
+    setDocs(docs);
+    localStorage.setItem(KEY_LAST, n);
+    return entry;
+  };
 
-    currentId = d.id;
-    localStorage.setItem(CUR_KEY, currentId);
+  const moveToTrash = (name) => {
+    const n = normalizeName(name);
+    const docs = getDocs();
+    const idx = docs.findIndex(d => d.name.toLowerCase() === n.toLowerCase());
+    if (idx < 0) return false;
 
-    docName.value = d.name || "Documento";
-    editor.innerHTML = d.html || "";
+    const [removed] = docs.splice(idx, 1);
+    setDocs(docs);
 
-    fontSel.value = d.style?.font || "Calibri";
-    sizeSel.value = String(d.style?.size || 16);
-    colorSel.value = d.style?.color || "#111827";
-    applyEditorBaseStyle();
+    const trash = getTrash();
+    trash.unshift({ ...removed, deletedAt: nowISO() });
+    setTrash(trash);
 
-    setDirty(false);
-    updateStats();
-  }
+    return true;
+  };
 
-  function ensureInitial(){
-    applyEditorBaseStyle();
-    const db = dbLoad();
-    const cid = localStorage.getItem(CUR_KEY);
-    if(cid && db.docs[cid]) { loadDoc(cid); return; }
+  const restoreFromTrash = (name) => {
+    const n = normalizeName(name);
+    const trash = getTrash();
+    const idx = trash.findIndex(d => d.name.toLowerCase() === n.toLowerCase());
+    if (idx < 0) return false;
 
-    currentId = uid();
-    localStorage.setItem(CUR_KEY, currentId);
+    const [rest] = trash.splice(idx, 1);
+    setTrash(trash);
 
-    db.docs[currentId] = {
-      id: currentId,
-      name: "Documento",
-      html: "",
-      style: {font:"Calibri", size:16, color:"#111827"},
-      updatedAt: new Date().toISOString()
-    };
-    dbSave(db);
-    loadDoc(currentId);
-  }
+    upsertDoc(rest.name, rest.html);
+    return true;
+  };
 
-  function exec(cmd, val=null){
-    editor.focus();
-    document.execCommand(cmd, false, val);
-    setDirty(true);
-    autosave();
-    updateStats();
-    refreshTools();
-  }
+  const deleteForever = (name) => {
+    const n = normalizeName(name);
+    const trash = getTrash();
+    const idx = trash.findIndex(d => d.name.toLowerCase() === n.toLowerCase());
+    if (idx < 0) return false;
+    trash.splice(idx, 1);
+    setTrash(trash);
+    return true;
+  };
 
-  function refreshTools(){
-    const cmds = ["bold","italic","underline","strikeThrough","justifyLeft","justifyCenter","justifyRight","justifyFull"];
-    cmds.forEach(c=>{
-      const on = document.queryCommandState(c);
-      document.querySelectorAll(`.tool[data-cmd="${c}"]`).forEach(b=>b.classList.toggle("active", !!on));
+  const openDocByName = (name) => {
+    const n = normalizeName(name);
+    const docs = getDocs();
+    const doc = docs.find(d => d.name.toLowerCase() === n.toLowerCase());
+    if (!doc) return false;
+
+    fileName.value = doc.name;
+    setHTML(doc.html);
+    localStorage.setItem(KEY_LAST, doc.name);
+    hardFocusEditor();
+    return true;
+  };
+
+  // --- Modal helpers (no overlay when hidden) ---
+  const showModal = (el) => {
+    el.classList.add("show");
+    el.setAttribute("aria-hidden", "false");
+  };
+  const hideModal = (el) => {
+    el.classList.remove("show");
+    el.setAttribute("aria-hidden", "true");
+  };
+
+  // close modal on backdrop tap
+  [openModal, trashModal].forEach(mod => {
+    mod.addEventListener("click", (e) => {
+      if (e.target === mod) hideModal(mod);
     });
-  }
+  });
 
-  // Modals
-  function openSaveAs(){
-    saveAsName.value = normName(docName.value);
-    saveAsModal.classList.add("show");
-    setTimeout(()=>saveAsName.focus(), 50);
-  }
-  function closeSaveAsModal(){ saveAsModal.classList.remove("show"); }
-
-  function openOpen(){
-    renderDocs();
-    openModal.classList.add("show");
-  }
-  function closeOpenModal(){ openModal.classList.remove("show"); }
-
-  function escapeHtml(s){
-    return String(s).replace(/[&<>"']/g, m => ({ "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;" }[m]));
-  }
-
-  function renderDocs(){
-    const db = dbLoad();
-    const docs = Object.values(db.docs).sort((a,b)=> (b.updatedAt||"").localeCompare(a.updatedAt||""));
-    selectedOpenId = null;
-    docsList.innerHTML = "";
-
-    if(docs.length === 0){
-      docsList.innerHTML = `<div class="item"><div><b>Nessun documento</b></div></div>`;
+  // --- Render lists ---
+  const renderDocs = () => {
+    const docs = getDocs();
+    docList.innerHTML = "";
+    if (docs.length === 0){
+      docList.innerHTML = `<div class="row"><div class="meta"><div class="name">Nessun documento</div><div class="date">Salva un documento per vederlo qui.</div></div></div>`;
       return;
     }
 
-    docs.forEach(d=>{
-      const it = document.createElement("div");
-      it.className = "item";
-      it.dataset.id = d.id;
-      it.innerHTML = `<div style="min-width:0">
-        <b>${escapeHtml(d.name || "Documento")}</b><br/>
-        <small>${new Date(d.updatedAt || Date.now()).toLocaleString()}</small>
-      </div>`;
-      it.addEventListener("click", ()=>{
-        [...docsList.querySelectorAll(".item")].forEach(x=>x.classList.remove("sel"));
-        it.classList.add("sel");
-        selectedOpenId = d.id;
+    for (const d of docs){
+      const row = document.createElement("div");
+      row.className = "row";
+      row.innerHTML = `
+        <div class="meta">
+          <div class="name">${escapeHTML(d.name)}</div>
+          <div class="date">Aggiornato: ${escapeHTML(fmtDate(d.updatedAt))}</div>
+        </div>
+        <div class="actions">
+          <button class="btn small primary" data-open="${escapeAttr(d.name)}" type="button">Apri</button>
+          <button class="btn small danger" data-trash="${escapeAttr(d.name)}" type="button">Elimina</button>
+        </div>
+      `;
+      docList.appendChild(row);
+    }
+
+    // Delegation click
+    docList.querySelectorAll("[data-open]").forEach(b => {
+      b.addEventListener("click", () => {
+        const name = b.getAttribute("data-open");
+        openDocByName(name);
+        hideModal(openModal);
+        showToast("Documento aperto");
       });
-      docsList.appendChild(it);
     });
-  }
+    docList.querySelectorAll("[data-trash]").forEach(b => {
+      b.addEventListener("click", () => {
+        const name = b.getAttribute("data-trash");
+        const ok = moveToTrash(name);
+        if (ok){
+          renderDocs();
+          showToast("Spostato nel cestino");
+        }
+      });
+    });
+  };
 
-  // Export via data URL (wrapper may capture)
-  function exportDataUrl(mime, ext, content){
-    saveLocal();
-    const name = normName(docName.value) + "." + ext;
-    const url = "data:" + mime + ";charset=utf-8," + encodeURIComponent(content);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = name;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-  }
-  function buildHtmlDoc(title){
-    const st = snapshot().style;
-    return `<!doctype html><html><head><meta charset="utf-8"><title>${escapeHtml(title)}</title>
-<style>body{font-family:${(st.font||"Calibri").replace(/[^a-zA-Z0-9 ,\\-]/g,"")},Calibri,Arial,sans-serif;margin:36px;font-size:${st.size}px;color:#111;}</style>
-</head><body>${editor.innerHTML}</body></html>`;
-  }
+  const renderTrash = () => {
+    const items = getTrash();
+    trashList.innerHTML = "";
+    if (items.length === 0){
+      trashList.innerHTML = `<div class="row"><div class="meta"><div class="name">Cestino vuoto</div><div class="date">Nessun elemento eliminato.</div></div></div>`;
+      return;
+    }
 
-  // Events: tools
-  document.querySelectorAll(".tool[data-cmd]").forEach(b=>{
-    b.addEventListener("click", (e)=>{ e.preventDefault(); exec(b.dataset.cmd); });
-    b.addEventListener("touchend", (e)=>{ e.preventDefault(); exec(b.dataset.cmd); }, {passive:false});
-  });
-
-  blockSel.addEventListener("change", ()=>{ editor.focus(); document.execCommand("formatBlock", false, blockSel.value); setDirty(true); autosave(); });
-
-  fontSel.addEventListener("change", ()=>{ applyEditorBaseStyle(); exec("fontName", fontSel.value); });
-  sizeSel.addEventListener("change", ()=>{ applyEditorBaseStyle(); setDirty(true); autosave(); });
-  colorSel.addEventListener("input", ()=>{ applyEditorBaseStyle(); exec("foreColor", colorSel.value); });
-
-  undoBtn.addEventListener("click", ()=>exec("undo"));
-  redoBtn.addEventListener("click", ()=>exec("redo"));
-
-  // Events: cr
+    for (const d of items){
+      const row = document.createElement("div");
+      row.className = "row";
+      row.innerHTML = `
+        <div class="meta">
+          <div class="name">${escapeHTML(d.name)}</div>
+          <div class="date">Eliminato: ${escapeHTML(fmtDate(d.deletedAt |
