@@ -10,7 +10,7 @@
     :root{
       --bg:#ffffff;
       --panel:#ffffff;
-      --soft:#f7f7f8;
+      --soft:#f6f7f9;
       --line:#e6e6e6;
       --muted:#6b7280;
       --text:#111827;
@@ -22,6 +22,11 @@
 
       --safeTop: env(safe-area-inset-top, 0px);
       --safeBot: env(safe-area-inset-bottom, 0px);
+
+      /* banner fisso (admob) */
+      --bannerH: 60px;
+
+      /* piccolo padding extra quando appare la tastiera (best-effort) */
       --kbPad: 0px;
     }
 
@@ -34,7 +39,7 @@
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
       -webkit-font-smoothing:antialiased;
       overscroll-behavior:none;
-      touch-action:manipulation;
+      touch-action: manipulation;
     }
 
     .app{
@@ -44,11 +49,11 @@
       background:var(--bg);
     }
 
-    /* TOPBAR: SOLO BRAND + NOME, ZERO BOTTONI */
+    /* TOPBAR: solo brand + nome doc */
     .topbar{
       position:sticky;
       top:0;
-      z-index:30;
+      z-index:50;
       background:var(--panel);
       border-bottom:1px solid var(--line);
       padding: calc(10px + var(--safeTop)) 12px 10px;
@@ -66,7 +71,7 @@
       min-width:0;
     }
     .logo{
-      width:36px;height:36px;border-radius:10px;
+      width:34px;height:34px;border-radius:10px;
       background:var(--primary);
       display:grid;place-items:center;
       color:#fff;font-weight:900;
@@ -84,8 +89,8 @@
       min-width:0;
     }
     .filename{
-      width:min(520px, 100%);
-      height:44px;
+      width:min(420px, 100%);
+      height:42px;
       border:1px solid var(--line);
       border-radius:999px;
       padding:0 14px;
@@ -99,41 +104,41 @@
       box-shadow: 0 0 0 4px rgba(37,99,235,.12);
     }
 
-    /* TOOLBAR */
+    /* TOOLBAR (compatta, cliccabile) */
     .toolbarWrap{
       position:sticky;
-      top: calc(68px + var(--safeTop));
-      z-index:25;
+      top: calc(62px + var(--safeTop));
+      z-index:45;
       background: var(--soft);
       border-bottom:1px solid var(--line);
-      pointer-events:auto;
     }
     .toolbar{
       max-width:1100px;
       margin:0 auto;
       padding:10px 12px;
       display:flex;
-      flex-wrap:wrap;
+      flex-direction:column;
       gap:10px;
-      align-items:center;
-      pointer-events:auto;
     }
 
     .group{
-      display:flex;
-      gap:10px;
-      align-items:center;
-      flex-wrap:wrap;
       background:#fff;
       border:1px solid var(--line);
       border-radius:18px;
       padding:10px;
       box-shadow: var(--shadow2);
-      pointer-events:auto;
+    }
+
+    /* griglia compatta per non occupare metà schermo */
+    .rowGrid{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      align-items:center;
     }
 
     .btn{
-      height:44px;
+      height:42px;
       border-radius:999px;
       border:1px solid var(--line);
       background:#fff;
@@ -143,12 +148,11 @@
       color:#111827;
       display:inline-flex;
       align-items:center;
-      gap:8px;
+      justify-content:center;
       cursor:pointer;
       user-select:none;
       -webkit-tap-highlight-color: transparent;
       touch-action: manipulation;
-      pointer-events:auto;
     }
     .btn:active{ transform:translateY(1px); }
     .btn.primary{ background:var(--primary); border-color:var(--primary); color:#fff; }
@@ -164,7 +168,6 @@
       cursor:pointer;
       -webkit-tap-highlight-color: transparent;
       touch-action: manipulation;
-      pointer-events:auto;
       display:inline-flex;
       align-items:center;
       gap:8px;
@@ -173,27 +176,23 @@
       font-size:14px;
     }
     .chip:active{ transform:translateY(1px); }
-    .chip.on{
-      border-color: rgba(37,99,235,.4);
-      box-shadow: 0 0 0 4px rgba(37,99,235,.10);
-    }
 
     .colorbox{
-      width:30px;height:30px;border-radius:10px;
+      width:28px;height:28px;border-radius:10px;
       border:1px solid var(--line);
       background:#111827;
       display:inline-block;
     }
+
     input[type="color"]{
       width:44px;height:38px;
       border:none;
       background:transparent;
       padding:0;
-      pointer-events:auto;
       touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
     }
 
-    /* SELECT (nuovi controlli font/dimensione) - stesso stile pulito */
     .select{
       height:38px;
       border-radius:12px;
@@ -205,7 +204,6 @@
       color:#111827;
       outline:none;
       touch-action: manipulation;
-      pointer-events:auto;
       -webkit-tap-highlight-color: transparent;
     }
     .select:focus{
@@ -219,7 +217,7 @@
       display:flex;
       justify-content:center;
       background:var(--soft);
-      padding: 10px 12px calc(16px + var(--safeBot) + var(--kbPad));
+      padding: 10px 12px calc(16px + var(--safeBot) + var(--bannerH) + var(--kbPad));
     }
     .page{
       width:100%;
@@ -231,10 +229,10 @@
       overflow:hidden;
       display:flex;
       flex-direction:column;
-      min-height: 60vh;
+      min-height: 55vh;
     }
     .ruler{
-      height:38px;
+      height:34px;
       border-bottom:1px solid var(--line);
       background: linear-gradient(#fff, #fff) padding-box,
         repeating-linear-gradient(to right, rgba(0,0,0,.08) 0, rgba(0,0,0,.08) 1px, transparent 1px, transparent 22px);
@@ -242,7 +240,7 @@
     }
     .editor{
       flex:1;
-      padding:18px 18px 30px;
+      padding:16px 16px 26px;
       outline:none;
       font-size:16px;
       line-height:1.55;
@@ -250,7 +248,6 @@
       word-wrap: break-word;
       overflow:auto;
       -webkit-overflow-scrolling: touch;
-      pointer-events:auto;
       touch-action: manipulation;
       user-select:text;
     }
@@ -259,7 +256,7 @@
       color:#9ca3af;
     }
 
-    /* MODALS */
+    /* MODALI */
     .modalBack{
       position:fixed;
       inset:0;
@@ -267,8 +264,8 @@
       display:none;
       align-items:flex-end;
       justify-content:center;
-      padding: 18px 12px calc(18px + var(--safeBot));
-      z-index:60;
+      padding: 18px 12px calc(18px + var(--safeBot) + var(--bannerH));
+      z-index:80;
     }
     .modalBack.show{ display:flex; }
     .modal{
@@ -319,11 +316,11 @@
     .status{
       position:fixed;
       left:12px; right:12px;
-      bottom: calc(12px + var(--safeBot));
+      bottom: calc(12px + var(--safeBot) + var(--bannerH));
       display:flex;
       justify-content:center;
       pointer-events:none;
-      z-index:70;
+      z-index:90;
     }
     .toast{
       background:#111827;
@@ -341,8 +338,36 @@
     }
     .toast.show{ opacity:1; transform:translateY(0); }
 
+    /* BANNER ADMOB PLACEHOLDER */
+    .admobBar{
+      position:fixed;
+      left:0; right:0;
+      bottom:0;
+      height: calc(var(--bannerH) + var(--safeBot));
+      background:#ffffff;
+      border-top:1px solid var(--line);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding-bottom: var(--safeBot);
+      z-index:70;
+    }
+    .admobInner{
+      width:min(480px, 100%);
+      height: var(--bannerH);
+      border:1px dashed rgba(17,24,39,.25);
+      border-radius:14px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:rgba(17,24,39,.55);
+      font-weight:900;
+      font-size:13px;
+      user-select:none;
+    }
+
     @media print{
-      .topbar, .toolbarWrap, .ruler, .status { display:none !important; }
+      .topbar, .toolbarWrap, .ruler, .status, .admobBar { display:none !important; }
       .content{ padding:0 !important; background:#fff !important; }
       .page{ border:none !important; box-shadow:none !important; border-radius:0 !important; }
       .editor{ padding:0 !important; }
@@ -352,7 +377,6 @@
 
 <body>
   <div class="app">
-    <!-- TOP: niente bottoni -->
     <header class="topbar">
       <div class="topbar-inner">
         <div class="brand">
@@ -369,54 +393,55 @@
       </div>
     </header>
 
-    <!-- TOOLBAR: TUTTI I COMANDI QUI -->
+    <!-- TOOLBAR compatta (file+formattazione) -->
     <div class="toolbarWrap">
       <div class="toolbar">
-        <div class="group" aria-label="File">
-          <button class="btn primary" id="btnSave" type="button">Salva</button>
-          <button class="btn" id="btnSaveAs" type="button">Salva con nome</button>
-          <button class="btn" id="btnOpen" type="button">Apri</button>
-          <button class="btn" id="btnPrint" type="button">Stampa</button>
-          <button class="btn danger" id="btnTrash" type="button">Cestino</button>
-        </div>
+        <div class="group" aria-label="Comandi">
+          <div class="rowGrid" aria-label="File">
+            <button class="btn primary" id="btnSave" type="button">Salva</button>
+            <button class="btn" id="btnSaveAs" type="button">Salva con nome</button>
+            <button class="btn" id="btnPrint" type="button">Stampa</button>
+            <button class="btn danger" id="btnTrash" type="button">Cestino</button>
+            <button class="btn" id="btnOpen" type="button">Apri</button>
+          </div>
 
-        <div class="group" aria-label="Formattazione">
-          <span class="chip" id="btnColor" role="button" aria-label="Colore testo">
-            <span class="colorbox" id="colorBox"></span>
-            <span>Colore</span>
-          </span>
-          <input id="colorPicker" type="color" value="#111827" aria-label="Scegli colore" />
+          <div class="rowGrid" aria-label="Formattazione" style="margin-top:10px;">
+            <span class="chip" id="btnColor" role="button" aria-label="Colore testo">
+              <span class="colorbox" id="colorBox"></span>
+              <span>Colore</span>
+            </span>
+            <input id="colorPicker" type="color" value="#111827" aria-label="Scegli colore" />
 
-          <!-- ✅ NUOVI: FONT + DIMENSIONE (senza cambiare design) -->
-          <select id="fontFamily" class="select" aria-label="Tipo carattere">
-            <option value="">Predefinito</option>
-            <option value="Calibri, Arial, sans-serif">Calibri</option>
-            <option value="Times New Roman, Times, serif">Times New Roman (Roman)</option>
-            <option value="Arial, Helvetica, sans-serif">Arial</option>
-            <option value="Georgia, serif">Georgia</option>
-            <option value="Verdana, Geneva, sans-serif">Verdana</option>
-            <option value="Courier New, Courier, monospace">Courier New</option>
-          </select>
+            <select id="fontFamily" class="select" aria-label="Tipo carattere">
+              <option value="">Predefinito</option>
+              <option value="Calibri, Arial, sans-serif">Calibri</option>
+              <option value="Times New Roman, Times, serif">Times New Roman</option>
+              <option value="Arial, Helvetica, sans-serif">Arial</option>
+              <option value="Georgia, serif">Georgia</option>
+              <option value="Verdana, Geneva, sans-serif">Verdana</option>
+              <option value="Courier New, Courier, monospace">Courier New</option>
+            </select>
 
-          <select id="fontSize" class="select" aria-label="Dimensione">
-            <option value="12">12</option>
-            <option value="14">14</option>
-            <option value="16" selected>16</option>
-            <option value="18">18</option>
-            <option value="20">20</option>
-            <option value="24">24</option>
-            <option value="28">28</option>
-            <option value="32">32</option>
-          </select>
+            <select id="fontSize" class="select" aria-label="Dimensione">
+              <option value="12">12</option>
+              <option value="14">14</option>
+              <option value="16" selected>16</option>
+              <option value="18">18</option>
+              <option value="20">20</option>
+              <option value="24">24</option>
+              <option value="28">28</option>
+              <option value="32">32</option>
+            </select>
 
-          <button class="chip" id="btnBold" type="button"><b>B</b></button>
-          <button class="chip" id="btnItalic" type="button"><i>I</i></button>
-          <button class="chip" id="btnUnderline" type="button"><u>U</u></button>
-          <button class="chip" id="btnStrike" type="button"><span style="text-decoration:line-through;font-weight:900;">S</span></button>
+            <button class="chip" id="btnBold" type="button"><b>B</b></button>
+            <button class="chip" id="btnItalic" type="button"><i>I</i></button>
+            <button class="chip" id="btnUnderline" type="button"><u>U</u></button>
+            <button class="chip" id="btnStrike" type="button"><span style="text-decoration:line-through;font-weight:900;">S</span></button>
 
-          <button class="chip" id="btnH" type="button">Titolo</button>
-          <button class="chip" id="btnP" type="button">Paragrafo</button>
-          <button class="chip" id="btnBullets" type="button">• Elenco</button>
+            <button class="chip" id="btnH" type="button">Titolo</button>
+            <button class="chip" id="btnP" type="button">Paragrafo</button>
+            <button class="chip" id="btnBullets" type="button">• Elenco</button>
+          </div>
         </div>
       </div>
     </div>
@@ -459,6 +484,11 @@
     <div class="status"><div class="toast" id="toast"></div></div>
   </div>
 
+  <!-- Banner AdMob placeholder fisso -->
+  <div class="admobBar" aria-label="Banner AdMob">
+    <div class="admobInner">Spazio banner AdMob</div>
+  </div>
+
 <script>
 (() => {
   "use strict";
@@ -493,13 +523,55 @@
   const btnP = $("btnP");
   const btnBullets = $("btnBullets");
 
-  // ✅ nuovi
   const fontFamily = $("fontFamily");
   const fontSize = $("fontSize");
 
-  const KEY_DOCS = "wordstudio_docs_v3";
-  const KEY_TRASH = "wordstudio_trash_v3";
-  const KEY_LAST = "wordstudio_last_open_v3";
+  const KEY_DOCS = "wordstudio_docs_v4";
+  const KEY_TRASH = "wordstudio_trash_v4";
+  const KEY_LAST = "wordstudio_last_open_v4";
+
+  // ✅ tap super-robusto (WebView)
+  const bindTap = (el, fn) => {
+    if (!el) return;
+    const h = (e) => {
+      try{
+        e.preventDefault();
+        e.stopPropagation();
+      }catch(_){}
+      fn(e);
+      return false;
+    };
+    el.addEventListener("touchend", h, { passive:false });
+    el.addEventListener("pointerup", h, { passive:false });
+    el.addEventListener("click", h, { passive:false });
+  };
+
+  // Focus editor
+  const hardFocusEditor = () => {
+    editor.focus({ preventScroll:true });
+    try{
+      const sel = window.getSelection();
+      if (!sel) return;
+      if (sel.rangeCount === 0) {
+        const r = document.createRange();
+        r.selectNodeContents(editor);
+        r.collapse(false);
+        sel.removeAllRanges();
+        sel.addRange(r);
+      }
+    }catch(e){}
+  };
+
+  bindTap(editor, () => hardFocusEditor());
+
+  // Toast
+  let toastTimer = null;
+  const showToast = (msg) => {
+    toast.textContent = msg;
+    toast.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove("show"), 1400);
+  };
 
   const nowISO = () => new Date().toISOString();
   const fmtDate = (iso) => {
@@ -522,34 +594,6 @@
   const getHTML = () => editor.innerHTML || "";
   const setHTML = (html) => { editor.innerHTML = html || "<p></p>"; };
 
-  // Focus robusto
-  const hardFocusEditor = () => {
-    editor.focus({ preventScroll:true });
-    try{
-      const sel = window.getSelection();
-      if (!sel) return;
-      if (sel.rangeCount === 0) {
-        const r = document.createRange();
-        r.selectNodeContents(editor);
-        r.collapse(false);
-        sel.removeAllRanges();
-        sel.addRange(r);
-      }
-    }catch(e){}
-  };
-
-  editor.addEventListener("pointerdown", () => hardFocusEditor(), { passive:true });
-  editor.addEventListener("click", () => hardFocusEditor());
-
-  // Toast
-  let toastTimer = null;
-  const showToast = (msg) => {
-    toast.textContent = msg;
-    toast.classList.add("show");
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => toast.classList.remove("show"), 1600);
-  };
-
   // execCommand helper
   const exec = (cmd, val=null) => {
     hardFocusEditor();
@@ -557,10 +601,9 @@
     try{ document.execCommand(cmd, false, val); }catch(e){}
   };
 
-  // Storage docs
+  // Docs storage
   const getDocs = () => loadJSON(KEY_DOCS, []);
   const setDocs = (arr) => saveJSON(KEY_DOCS, arr);
-
   const getTrash = () => loadJSON(KEY_TRASH, []);
   const setTrash = (arr) => saveJSON(KEY_TRASH, arr);
 
@@ -582,7 +625,7 @@
     fileName.value = doc.name;
     setHTML(doc.html);
     localStorage.setItem(KEY_LAST, doc.name);
-    setTimeout(hardFocusEditor, 80);
+    setTimeout(hardFocusEditor, 60);
     return true;
   };
 
@@ -621,7 +664,6 @@
     return true;
   };
 
-  // Escape
   const escapeHTML = (str) => String(str).replace(/[&<>"']/g, s => ({
     "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
   }[s]));
@@ -629,232 +671,4 @@
 
   // Modals
   const showModal = (el) => { el.classList.add("show"); el.setAttribute("aria-hidden","false"); };
-  const hideModal = (el) => { el.classList.remove("show"); el.setAttribute("aria-hidden","true"); };
-
-  [openModal, trashModal].forEach(mod => {
-    mod.addEventListener("click", (e) => { if (e.target === mod) hideModal(mod); });
-  });
-
-  const renderDocs = () => {
-    const docs = getDocs();
-    docList.innerHTML = "";
-    if (!docs.length){
-      docList.innerHTML = `<div class="row"><div class="meta"><div class="name">Nessun documento</div><div class="date">Salva un documento per vederlo qui.</div></div></div>`;
-      return;
-    }
-    for (const d of docs){
-      const row = document.createElement("div");
-      row.className = "row";
-      row.innerHTML = `
-        <div class="meta">
-          <div class="name">${escapeHTML(d.name)}</div>
-          <div class="date">Aggiornato: ${escapeHTML(fmtDate(d.updatedAt))}</div>
-        </div>
-        <div class="actions">
-          <button class="btn small primary" data-open="${escapeAttr(d.name)}" type="button">Apri</button>
-          <button class="btn small danger" data-trash="${escapeAttr(d.name)}" type="button">Elimina</button>
-        </div>
-      `;
-      docList.appendChild(row);
-    }
-    docList.querySelectorAll("[data-open]").forEach(b => {
-      b.addEventListener("click", () => {
-        openDocByName(b.getAttribute("data-open"));
-        hideModal(openModal);
-        showToast("Documento aperto");
-      });
-    });
-    docList.querySelectorAll("[data-trash]").forEach(b => {
-      b.addEventListener("click", () => {
-        if (moveToTrash(b.getAttribute("data-trash"))){
-          renderDocs();
-          showToast("Spostato nel cestino");
-        }
-      });
-    });
-  };
-
-  const renderTrash = () => {
-    const items = getTrash();
-    trashList.innerHTML = "";
-    if (!items.length){
-      trashList.innerHTML = `<div class="row"><div class="meta"><div class="name">Cestino vuoto</div><div class="date">Nessun elemento eliminato.</div></div></div>`;
-      return;
-    }
-    for (const d of items){
-      const row = document.createElement("div");
-      row.className = "row";
-      row.innerHTML = `
-        <div class="meta">
-          <div class="name">${escapeHTML(d.name)}</div>
-          <div class="date">Eliminato: ${escapeHTML(fmtDate(d.deletedAt || d.updatedAt))}</div>
-        </div>
-        <div class="actions">
-          <button class="btn small" data-restore="${escapeAttr(d.name)}" type="button">Ripristina</button>
-          <button class="btn small danger" data-delete="${escapeAttr(d.name)}" type="button">Elimina</button>
-        </div>
-      `;
-      trashList.appendChild(row);
-    }
-    trashList.querySelectorAll("[data-restore]").forEach(b => {
-      b.addEventListener("click", () => {
-        if (restoreFromTrash(b.getAttribute("data-restore"))){
-          renderTrash();
-          showToast("Ripristinato");
-        }
-      });
-    });
-    trashList.querySelectorAll("[data-delete]").forEach(b => {
-      b.addEventListener("click", () => {
-        if (deleteForever(b.getAttribute("data-delete"))){
-          renderTrash();
-          showToast("Eliminato definitivamente");
-        }
-      });
-    });
-  };
-
-  // ✅ FONT + SIZE (aggiunti senza toccare altro)
-  const applyFontFamily = (family) => {
-    hardFocusEditor();
-    if (!family){
-      showToast("Font predefinito");
-      return;
-    }
-    // execCommand fontName spesso funziona bene su WebView
-    try{ document.execCommand("fontName", false, family); }catch(e){}
-    // fallback: avvolgi selezione in span
-    try{
-      const sel = window.getSelection();
-      if (sel && sel.rangeCount){
-        const range = sel.getRangeAt(0);
-        if (!range.collapsed){
-          const span = document.createElement("span");
-          span.style.fontFamily = family;
-          range.surroundContents(span);
-        }
-      }
-    }catch(e){}
-  };
-
-  const applyFontSizePx = (px) => {
-    hardFocusEditor();
-    // se c'è selezione: span con px (più affidabile)
-    try{
-      const sel = window.getSelection();
-      if (sel && sel.rangeCount){
-        const range = sel.getRangeAt(0);
-        if (!range.collapsed){
-          const span = document.createElement("span");
-          span.style.fontSize = px + "px";
-          range.surroundContents(span);
-          return;
-        }
-      }
-    }catch(e){}
-
-    // altrimenti: trucco execCommand fontSize (1..7) -> poi convertiamo i <font>
-    try{
-      document.execCommand("fontSize", false, "7");
-      const fonts = editor.querySelectorAll('font[size="7"]');
-      fonts.forEach(ft=>{
-        const span = document.createElement("span");
-        span.style.fontSize = px + "px";
-        span.innerHTML = ft.innerHTML;
-        ft.replaceWith(span);
-      });
-    }catch(e){}
-  };
-
-  fontFamily.addEventListener("change", () => {
-    const v = fontFamily.value;
-    applyFontFamily(v);
-    showToast("Font applicato");
-  });
-
-  fontSize.addEventListener("change", () => {
-    const px = parseInt(fontSize.value, 10);
-    if (!isNaN(px)){
-      applyFontSizePx(px);
-      showToast("Dimensione " + px);
-    }
-  });
-
-  // Colore
-  const applyColor = (hex) => {
-    colorBox.style.background = hex;
-    exec("foreColor", hex);
-  };
-  colorPicker.addEventListener("input", () => applyColor(colorPicker.value), { passive:true });
-  btnColor.addEventListener("click", () => colorPicker.click());
-
-  // Pulsanti formattazione
-  btnBold.addEventListener("click", () => exec("bold"));
-  btnItalic.addEventListener("click", () => exec("italic"));
-  btnUnderline.addEventListener("click", () => exec("underline"));
-  btnStrike.addEventListener("click", () => exec("strikeThrough"));
-
-  btnH.addEventListener("click", () => exec("formatBlock", "h1"));
-  btnP.addEventListener("click", () => exec("formatBlock", "p"));
-  btnBullets.addEventListener("click", () => exec("insertUnorderedList"));
-
-  // Save / SaveAs / Print / Open / Trash
-  const doSave = (askName) => {
-    let name = getCurrentName();
-    if (askName){
-      const n = prompt("Nome documento:", name);
-      if (n === null) return;
-      fileName.value = normalizeName(n);
-      name = getCurrentName();
-    }
-    upsertDoc(name, getHTML());
-    showToast("Salvato");
-  };
-
-  btnSave.addEventListener("click", () => doSave(false));
-  btnSaveAs.addEventListener("click", () => doSave(true));
-
-  btnPrint.addEventListener("click", () => {
-    doSave(false);
-    showToast("Stampa…");
-    setTimeout(() => window.print(), 250);
-  });
-
-  btnOpen.addEventListener("click", () => {
-    renderDocs();
-    showModal(openModal);
-  });
-
-  btnTrash.addEventListener("click", () => {
-    renderTrash();
-    showModal(trashModal);
-  });
-
-  btnCloseOpen.addEventListener("click", () => hideModal(openModal));
-  btnCloseTrash.addEventListener("click", () => hideModal(trashModal));
-
-  // Autosave leggero
-  let t = null;
-  editor.addEventListener("input", () => {
-    clearTimeout(t);
-    t = setTimeout(() => {
-      const name = getCurrentName();
-      upsertDoc(name, getHTML());
-    }, 450);
-  });
-
-  // Restore last
-  const last = localStorage.getItem(KEY_LAST);
-  if (last){
-    openDocByName(last);
-  } else {
-    setHTML("<p></p>");
-  }
-
-  // Init colore
-  applyColor(colorPicker.value);
-  setTimeout(hardFocusEditor, 120);
-})();
-</script>
-</body>
-</html>
+  const hideModal = (el) 
