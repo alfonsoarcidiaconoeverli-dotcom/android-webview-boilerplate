@@ -18,8 +18,6 @@
       --shadow:0 8px 22px rgba(0,0,0,.06);
       --shadow2:0 4px 14px rgba(0,0,0,.05);
       --btnh:44px;
-      --gap:10px;
-      --maxw:1100px;
       --safeTop: env(safe-area-inset-top, 0px);
       --safeBot: env(safe-area-inset-bottom, 0px);
     }
@@ -30,65 +28,46 @@
       margin:0;
       background:var(--bg);
       color:var(--text);
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
       -webkit-font-smoothing:antialiased;
-      text-rendering:optimizeLegibility;
       overscroll-behavior:none;
     }
 
-    /* IMPORTANT: niente overlay che blocca i tocchi */
     .app{
       min-height:100%;
       display:flex;
       flex-direction:column;
       background:var(--bg);
-      pointer-events:auto;
       touch-action:manipulation;
     }
 
-    /* Header stile Word (pulito bianco) */
+    /* TOP SOLO TESTO: niente bottoni importanti qui */
     .topbar{
       position:sticky;
       top:0;
-      z-index:20;
+      z-index:30;
       background:var(--panel);
       border-bottom:1px solid var(--line);
       padding: calc(10px + var(--safeTop)) 12px 10px;
     }
     .topbar-inner{
-      max-width:var(--maxw);
+      max-width:1100px;
       margin:0 auto;
       display:flex;
       align-items:center;
       gap:12px;
     }
-    .brand{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      min-width: 160px;
-      user-select:none;
-    }
+    .brand{ display:flex; align-items:center; gap:10px; user-select:none; }
     .logo{
       width:36px;height:36px;border-radius:10px;
       background:var(--primary);
       display:grid;place-items:center;
-      color:#fff;font-weight:800;
+      color:#fff;font-weight:900;
       box-shadow: var(--shadow2);
-      flex:0 0 auto;
     }
-    .brand-text{
-      line-height:1.1;
-    }
-    .brand-text .title{
-      font-size:16px;
-      font-weight:800;
-    }
-    .brand-text .sub{
-      font-size:12px;
-      color:var(--muted);
-      font-weight:600;
-    }
+    .brand-text{ line-height:1.1; }
+    .brand-text .title{ font-size:16px; font-weight:900; }
+    .brand-text .sub{ font-size:12px; color:var(--muted); font-weight:700; }
 
     .filebar{
       flex:1;
@@ -96,15 +75,15 @@
       gap:10px;
       align-items:center;
       justify-content:flex-end;
-      min-width: 0;
+      min-width:0;
     }
     .filename{
       flex:1;
-      min-width: 0;
-      height: var(--btnh);
+      min-width:0;
+      height:44px;
       border:1px solid var(--line);
-      border-radius: 999px;
-      padding: 0 14px;
+      border-radius:999px;
+      padding:0 14px;
       font-size:14px;
       outline:none;
       background:#fff;
@@ -115,13 +94,45 @@
       box-shadow: 0 0 0 4px rgba(37,99,235,.12);
     }
 
+    /* TOOLBAR: qui mettiamo TUTTO (file + formattazione) */
+    .toolbarWrap{
+      position:sticky;
+      top: calc(68px + var(--safeTop)); /* sotto topbar */
+      z-index:25;
+      background: #f7f7f8;
+      border-bottom:1px solid var(--line);
+    }
+    .toolbar{
+      max-width:1100px;
+      margin:0 auto;
+      padding:10px 12px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      align-items:center;
+      pointer-events:auto;
+      touch-action: manipulation;
+    }
+
+    .group{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:10px;
+      box-shadow: var(--shadow2);
+    }
+
     .btn{
-      height: var(--btnh);
-      border-radius: 999px;
+      height:44px;
+      border-radius:999px;
       border:1px solid var(--line);
       background:#fff;
-      padding: 0 14px;
-      font-weight:800;
+      padding:0 14px;
+      font-weight:900;
       font-size:14px;
       color:#111827;
       display:inline-flex;
@@ -133,51 +144,17 @@
       touch-action: manipulation;
       pointer-events:auto;
     }
-    .btn:active{ transform: translateY(1px); }
-    .btn.primary{
-      background: var(--primary);
-      border-color: var(--primary);
-      color:#fff;
-    }
-    .btn.danger{
-      border-color: rgba(220,38,38,.35);
-      color: var(--danger);
-      background:#fff;
-    }
-    .btn.ghost{
-      background:#fff;
-    }
+    .btn:active{ transform:translateY(1px); }
+    .btn.primary{ background:var(--primary); border-color:var(--primary); color:#fff; }
+    .btn.danger{ border-color: rgba(220,38,38,.35); color:var(--danger); }
 
-    /* Riga comandi */
-    .toolbar{
-      max-width:var(--maxw);
-      margin: 10px auto 0;
-      padding: 0 12px 10px;
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-      align-items:center;
-      pointer-events:auto;
-      touch-action: manipulation;
-    }
-    .group{
-      display:flex;
-      gap:10px;
-      align-items:center;
-      flex-wrap:wrap;
-      background:#fff;
-      border:1px solid var(--line);
-      border-radius: var(--radius);
-      padding:10px;
-      box-shadow: var(--shadow2);
-    }
     .chip{
       height:38px;
-      border-radius: 12px;
+      border-radius:12px;
       border:1px solid var(--line);
       background:#fff;
-      padding: 0 12px;
-      font-weight:800;
+      padding:0 12px;
+      font-weight:900;
       cursor:pointer;
       -webkit-tap-highlight-color: transparent;
       touch-action: manipulation;
@@ -186,11 +163,12 @@
       align-items:center;
       gap:8px;
     }
-    .chip:active{ transform: translateY(1px); }
+    .chip:active{ transform:translateY(1px); }
     .chip.on{
       border-color: rgba(37,99,235,.4);
       box-shadow: 0 0 0 4px rgba(37,99,235,.10);
     }
+
     .colorbox{
       width:30px;height:30px;border-radius:10px;
       border:1px solid var(--line);
@@ -204,47 +182,43 @@
       padding:0;
     }
 
-    /* Editor area */
+    /* CONTENT */
     .content{
       flex:1;
       display:flex;
       justify-content:center;
-      padding: 10px 12px calc(16px + var(--safeBot));
       background:#f7f7f8;
+      padding: 10px 12px calc(16px + var(--safeBot) + var(--kbPad, 0px));
     }
     .page{
       width:100%;
-      max-width: var(--maxw);
+      max-width:1100px;
       background:#fff;
       border:1px solid var(--line);
-      border-radius: 18px;
+      border-radius:18px;
       box-shadow: var(--shadow);
       overflow:hidden;
       display:flex;
       flex-direction:column;
-      min-height: 62vh;
+      min-height: 55vh;
     }
-
     .ruler{
       height:38px;
       border-bottom:1px solid var(--line);
       background: linear-gradient(#fff, #fff) padding-box,
-                  repeating-linear-gradient(to right, rgba(0,0,0,.08) 0, rgba(0,0,0,.08) 1px, transparent 1px, transparent 22px);
+        repeating-linear-gradient(to right, rgba(0,0,0,.08) 0, rgba(0,0,0,.08) 1px, transparent 1px, transparent 22px);
       opacity:.45;
     }
-
     .editor{
       flex:1;
-      padding: 18px 18px 30px;
+      padding:18px 18px 30px;
       outline:none;
-      font-size: 16px;
-      line-height: 1.55;
-      color: var(--text);
+      font-size:16px;
+      line-height:1.55;
+      color:var(--text);
       word-wrap: break-word;
       overflow:auto;
       -webkit-overflow-scrolling: touch;
-
-      /* CRUCIALE: tocco e input */
       pointer-events:auto;
       touch-action: manipulation;
       user-select:text;
@@ -254,7 +228,7 @@
       color:#9ca3af;
     }
 
-    /* Modali (senza overlay che blocca i click sui bottoni quando chiuse) */
+    /* MODALS */
     .modalBack{
       position:fixed;
       inset:0;
@@ -263,33 +237,29 @@
       align-items:flex-end;
       justify-content:center;
       padding: 18px 12px calc(18px + var(--safeBot));
-      z-index:50;
-      pointer-events:auto;
+      z-index:60;
     }
     .modalBack.show{ display:flex; }
     .modal{
       width:min(680px, 100%);
       background:#fff;
       border:1px solid var(--line);
-      border-radius: 18px;
+      border-radius:18px;
       box-shadow: var(--shadow);
       overflow:hidden;
     }
     .modalHead{
-      padding: 14px 14px 10px;
+      padding:14px 14px 10px;
       border-bottom:1px solid var(--line);
       display:flex;
       align-items:center;
       justify-content:space-between;
       gap:10px;
     }
-    .modalHead .h{
-      font-weight:900;
-      font-size:16px;
-    }
-    .modalBody{
-      padding: 12px 14px 14px;
-    }
+    .modalHead .h{ font-weight:900; font-size:16px; }
+    .modalBody{ padding:12px 14px 14px; }
+    .hint{ font-size:13px; color:var(--muted); font-weight:650; margin:0 0 10px; }
+
     .list{
       display:flex;
       flex-direction:column;
@@ -300,83 +270,48 @@
     }
     .row{
       border:1px solid var(--line);
-      border-radius: 14px;
-      padding: 12px;
+      border-radius:14px;
+      padding:12px;
       display:flex;
       align-items:center;
       justify-content:space-between;
       gap:10px;
       background:#fff;
     }
-    .row .meta{
-      min-width:0;
-      display:flex;
-      flex-direction:column;
-      gap:4px;
-    }
-    .row .name{
-      font-weight:900;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
-    .row .date{
-      font-size:12px;
-      color: var(--muted);
-      font-weight:700;
-    }
-    .row .actions{
-      display:flex;
-      gap:8px;
-      flex:0 0 auto;
-    }
-    .small{
-      height:38px;
-      padding: 0 12px;
-      font-size:13px;
-    }
-    .hint{
-      font-size:13px;
-      color: var(--muted);
-      font-weight:650;
-      margin: 0 0 10px;
-    }
+    .row .meta{ min-width:0; display:flex; flex-direction:column; gap:4px; }
+    .row .name{ font-weight:900; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .row .date{ font-size:12px; color:var(--muted); font-weight:700; }
+    .row .actions{ display:flex; gap:8px; flex:0 0 auto; }
+    .small{ height:38px; padding:0 12px; font-size:13px; }
 
-    /* Barra status */
+    /* TOAST */
     .status{
       position:fixed;
-      left:12px;
-      right:12px;
+      left:12px; right:12px;
       bottom: calc(12px + var(--safeBot));
       display:flex;
       justify-content:center;
-      pointer-events:none; /* non deve bloccare tocchi */
-      z-index:60;
+      pointer-events:none;
+      z-index:70;
     }
     .toast{
-      pointer-events:none;
       background:#111827;
       color:#fff;
       padding:10px 14px;
       border-radius:999px;
-      font-weight:800;
+      font-weight:900;
       font-size:13px;
       box-shadow: var(--shadow);
       opacity:0;
       transform: translateY(10px);
-      transition: .25s ease;
+      transition:.25s ease;
       max-width:min(640px, 100%);
       text-align:center;
     }
-    .toast.show{
-      opacity:1;
-      transform: translateY(0);
-    }
+    .toast.show{ opacity:1; transform:translateY(0); }
 
-    /* Stampa: solo contenuto */
     @media print{
-      body{ background:#fff; }
-      .topbar, .toolbar, .ruler, .status { display:none !important; }
+      .topbar, .toolbarWrap, .ruler, .status { display:none !important; }
       .content{ padding:0 !important; background:#fff !important; }
       .page{ border:none !important; box-shadow:none !important; border-radius:0 !important; }
       .editor{ padding:0 !important; }
@@ -384,109 +319,99 @@
   </style>
 </head>
 <body>
-  <div class="app" id="app">
-    <header class="topbar">
-      <div class="topbar-inner">
-        <div class="brand">
-          <div class="logo">W</div>
-          <div class="brand-text">
-            <div class="title">WordStudio</div>
-            <div class="sub">stile Word • offline</div>
-          </div>
-        </div>
-
-        <div class="filebar">
-          <input id="fileName" class="filename" type="text" value="Documento" autocomplete="off" inputmode="text" />
-          <button class="btn ghost" id="btnOpen" type="button">Apri</button>
+<div class="app" id="app">
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="logo">W</div>
+        <div class="brand-text">
+          <div class="title">WordStudio</div>
+          <div class="sub">stile Word • offline</div>
         </div>
       </div>
 
-      <div class="toolbar">
-        <div class="group" aria-label="File">
-          <button class="btn primary" id="btnSave" type="button">Salva</button>
-          <button class="btn" id="btnSaveAs" type="button">Salva con nome</button>
-          <button class="btn" id="btnPrint" type="button">Stampa</button>
-          <button class="btn danger" id="btnTrash" type="button">Cestino</button>
-        </div>
-
-        <div class="group" aria-label="Formattazione">
-          <span class="chip" id="btnColor" type="button" role="button" aria-label="Colore testo">
-            <span class="colorbox" id="colorBox"></span>
-            <span>Colore</span>
-          </span>
-          <input id="colorPicker" type="color" value="#111827" aria-label="Scegli colore" />
-
-          <button class="chip" id="btnBold" type="button"><b>B</b></button>
-          <button class="chip" id="btnItalic" type="button"><i>I</i></button>
-          <button class="chip" id="btnUnderline" type="button"><u>U</u></button>
-
-          <button class="chip" id="btnStrike" type="button"><span style="text-decoration:line-through;font-weight:900;">S</span></button>
-
-          <button class="chip" id="btnH" type="button">Titolo</button>
-          <button class="chip" id="btnP" type="button">Paragrafo</button>
-          <button class="chip" id="btnBullets" type="button">• Elenco</button>
-        </div>
-      </div>
-    </header>
-
-    <main class="content">
-      <section class="page">
-        <div class="ruler"></div>
-        <div id="editor" class="editor" contenteditable="true" spellcheck="true"></div>
-      </section>
-    </main>
-
-    <!-- Modal Apri -->
-    <div class="modalBack" id="openModal" aria-hidden="true">
-      <div class="modal" role="dialog" aria-modal="true" aria-label="Apri documento">
-        <div class="modalHead">
-          <div class="h">Apri documento</div>
-          <button class="btn small" id="btnCloseOpen" type="button">Chiudi</button>
-        </div>
-        <div class="modalBody">
-          <p class="hint">I documenti vengono salvati offline su questo dispositivo.</p>
-          <div class="list" id="docList"></div>
-        </div>
+      <div class="filebar">
+        <input id="fileName" class="filename" type="text" value="Documento" autocomplete="off" />
+        <!-- Apri resta qui (se anche questo non clicca, lo trovi anche nei bottoni sotto) -->
+        <button class="btn" id="btnOpenTop" type="button">Apri</button>
       </div>
     </div>
+  </header>
 
-    <!-- Modal Cestino -->
-    <div class="modalBack" id="trashModal" aria-hidden="true">
-      <div class="modal" role="dialog" aria-modal="true" aria-label="Cestino">
-        <div class="modalHead">
-          <div class="h">Cestino</div>
-          <button class="btn small" id="btnCloseTrash" type="button">Chiudi</button>
-        </div>
-        <div class="modalBody">
-          <p class="hint">Qui trovi i documenti eliminati. Puoi ripristinarli o eliminarli definitivamente.</p>
-          <div class="list" id="trashList"></div>
-        </div>
+  <!-- TOOLBAR STICKY: QUI METTIAMO I BOTTONI IMPORTANTI -->
+  <div class="toolbarWrap">
+    <div class="toolbar">
+      <div class="group" aria-label="File">
+        <button class="btn primary" id="btnSave" type="button">Salva</button>
+        <button class="btn" id="btnSaveAs" type="button">Salva con nome</button>
+        <button class="btn" id="btnPrint" type="button">Stampa</button>
+        <button class="btn danger" id="btnTrash" type="button">Cestino</button>
+        <!-- Apri duplicato (così sei sicuro) -->
+        <button class="btn" id="btnOpen" type="button">Apri</button>
+      </div>
+
+      <div class="group" aria-label="Formattazione">
+        <span class="chip" id="btnColor" role="button" aria-label="Colore testo">
+          <span class="colorbox" id="colorBox"></span>
+          <span>Colore</span>
+        </span>
+        <input id="colorPicker" type="color" value="#111827" aria-label="Scegli colore" />
+
+        <button class="chip" id="btnBold" type="button"><b>B</b></button>
+        <button class="chip" id="btnItalic" type="button"><i>I</i></button>
+        <button class="chip" id="btnUnderline" type="button"><u>U</u></button>
+        <button class="chip" id="btnStrike" type="button"><span style="text-decoration:line-through;font-weight:900;">S</span></button>
+
+        <button class="chip" id="btnH" type="button">Titolo</button>
+        <button class="chip" id="btnP" type="button">Paragrafo</button>
+        <button class="chip" id="btnBullets" type="button">• Elenco</button>
       </div>
     </div>
-
-    <div class="status"><div class="toast" id="toast"></div></div>
   </div>
+
+  <main class="content">
+    <section class="page">
+      <div class="ruler"></div>
+      <div id="editor" class="editor" contenteditable="true" spellcheck="true"></div>
+    </section>
+  </main>
+
+  <!-- Modal Apri -->
+  <div class="modalBack" id="openModal" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-label="Apri documento">
+      <div class="modalHead">
+        <div class="h">Apri documento</div>
+        <button class="btn small" id="btnCloseOpen" type="button">Chiudi</button>
+      </div>
+      <div class="modalBody">
+        <p class="hint">I documenti vengono salvati offline su questo dispositivo.</p>
+        <div class="list" id="docList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Cestino -->
+  <div class="modalBack" id="trashModal" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-label="Cestino">
+      <div class="modalHead">
+        <div class="h">Cestino</div>
+        <button class="btn small" id="btnCloseTrash" type="button">Chiudi</button>
+      </div>
+      <div class="modalBody">
+        <p class="hint">Ripristina o elimina definitivamente.</p>
+        <div class="list" id="trashList"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="status"><div class="toast" id="toast"></div></div>
+</div>
 
 <script>
 (() => {
   "use strict";
 
-  // --- Utils ---
   const $ = (id) => document.getElementById(id);
-  const nowISO = () => new Date().toISOString();
-  const fmtDate = (iso) => {
-    try{
-      const d = new Date(iso);
-      return d.toLocaleString("it-IT", { year:"numeric", month:"2-digit", day:"2-digit", hour:"2-digit", minute:"2-digit" });
-    }catch(e){ return iso; }
-  };
-
-  // Storage keys
-  const KEY_DOCS = "wordstudio_docs_v1";
-  const KEY_TRASH = "wordstudio_trash_v1";
-  const KEY_LAST = "wordstudio_last_open_v1";
-
-  // Elements
   const editor = $("editor");
   const fileName = $("fileName");
   const toast = $("toast");
@@ -494,6 +419,7 @@
   const btnSave = $("btnSave");
   const btnSaveAs = $("btnSaveAs");
   const btnOpen = $("btnOpen");
+  const btnOpenTop = $("btnOpenTop");
   const btnPrint = $("btnPrint");
   const btnTrash = $("btnTrash");
 
@@ -515,12 +441,34 @@
   const btnP = $("btnP");
   const btnBullets = $("btnBullets");
 
-  // --- Touch/click reliability fixes ---
-  // (evita ghost click / problemi focus su webview mobile)
+  const KEY_DOCS = "wordstudio_docs_v2";
+  const KEY_TRASH = "wordstudio_trash_v2";
+  const KEY_LAST = "wordstudio_last_open_v2";
+
+  const nowISO = () => new Date().toISOString();
+  const fmtDate = (iso) => {
+    try{
+      const d = new Date(iso);
+      return d.toLocaleString("it-IT", { year:"numeric", month:"2-digit", day:"2-digit", hour:"2-digit", minute:"2-digit" });
+    }catch(e){ return iso; }
+  };
+
+  const loadJSON = (k, fallback) => {
+    try{
+      const v = localStorage.getItem(k);
+      return v ? JSON.parse(v) : fallback;
+    }catch(e){ return fallback; }
+  };
+  const saveJSON = (k, val) => localStorage.setItem(k, JSON.stringify(val));
+
+  const normalizeName = (name) => (name || "").trim().replace(/\s+/g, " ").slice(0, 60) || "Documento";
+  const getCurrentName = () => normalizeName(fileName.value);
+  const getHTML = () => editor.innerHTML || "";
+  const setHTML = (html) => { editor.innerHTML = html || "<p></p>"; };
+
+  // --- FOCUS/SELECTION robust ---
   const hardFocusEditor = () => {
-    // contenteditable su Android a volte non prende focus se non forzi
-    editor.focus({ preventScroll: true });
-    // fallback: selection at end
+    editor.focus({ preventScroll:true });
     try{
       const sel = window.getSelection();
       if (!sel) return;
@@ -534,10 +482,8 @@
     }catch(e){}
   };
 
-  editor.addEventListener("pointerdown", () => {
-    // prendere focus prima di digitare
-    hardFocusEditor();
-  }, { passive: true });
+  editor.addEventListener("pointerdown", () => hardFocusEditor(), { passive:true });
+  editor.addEventListener("click", () => hardFocusEditor());
 
   // --- Toast ---
   let toastTimer = null;
@@ -548,45 +494,33 @@
     toastTimer = setTimeout(() => toast.classList.remove("show"), 1600);
   };
 
-  // --- Data model ---
-  const loadJSON = (k, fallback) => {
-    try{
-      const v = localStorage.getItem(k);
-      if (!v) return fallback;
-      return JSON.parse(v);
-    }catch(e){
-      return fallback;
-    }
-  };
-  const saveJSON = (k, val) => localStorage.setItem(k, JSON.stringify(val));
-
+  // --- Docs ---
   const getDocs = () => loadJSON(KEY_DOCS, []);
   const setDocs = (arr) => saveJSON(KEY_DOCS, arr);
 
   const getTrash = () => loadJSON(KEY_TRASH, []);
   const setTrash = (arr) => saveJSON(KEY_TRASH, arr);
 
-  const normalizeName = (name) => (name || "").trim().replace(/\s+/g, " ").slice(0, 60) || "Documento";
-
-  const getCurrentName = () => normalizeName(fileName.value);
-
-  const getHTML = () => editor.innerHTML || "";
-
-  const setHTML = (html) => {
-    editor.innerHTML = html || "";
-    // se vuoto, lascia placeholder
-  };
-
   const upsertDoc = (name, html) => {
     const docs = getDocs();
     const n = normalizeName(name);
     const idx = docs.findIndex(d => d.name.toLowerCase() === n.toLowerCase());
-    const entry = { name: n, html, updatedAt: nowISO() };
-    if (idx >= 0) docs[idx] = entry;
-    else docs.unshift(entry);
+    const entry = { name:n, html, updatedAt: nowISO() };
+    if (idx >= 0) docs[idx] = entry; else docs.unshift(entry);
     setDocs(docs);
     localStorage.setItem(KEY_LAST, n);
     return entry;
+  };
+
+  const openDocByName = (name) => {
+    const n = normalizeName(name);
+    const doc = getDocs().find(d => d.name.toLowerCase() === n.toLowerCase());
+    if (!doc) return false;
+    fileName.value = doc.name;
+    setHTML(doc.html);
+    localStorage.setItem(KEY_LAST, doc.name);
+    setTimeout(hardFocusEditor, 80);
+    return true;
   };
 
   const moveToTrash = (name) => {
@@ -594,14 +528,12 @@
     const docs = getDocs();
     const idx = docs.findIndex(d => d.name.toLowerCase() === n.toLowerCase());
     if (idx < 0) return false;
-
     const [removed] = docs.splice(idx, 1);
     setDocs(docs);
 
     const trash = getTrash();
     trash.unshift({ ...removed, deletedAt: nowISO() });
     setTrash(trash);
-
     return true;
   };
 
@@ -610,10 +542,8 @@
     const trash = getTrash();
     const idx = trash.findIndex(d => d.name.toLowerCase() === n.toLowerCase());
     if (idx < 0) return false;
-
     const [rest] = trash.splice(idx, 1);
     setTrash(trash);
-
     upsertDoc(rest.name, rest.html);
     return true;
   };
@@ -628,45 +558,27 @@
     return true;
   };
 
-  const openDocByName = (name) => {
-    const n = normalizeName(name);
-    const docs = getDocs();
-    const doc = docs.find(d => d.name.toLowerCase() === n.toLowerCase());
-    if (!doc) return false;
+  // --- Escape ---
+  const escapeHTML = (str) => String(str).replace(/[&<>"']/g, s => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+  }[s]));
+  const escapeAttr = (str) => String(str).replace(/"/g, "&quot;");
 
-    fileName.value = doc.name;
-    setHTML(doc.html);
-    localStorage.setItem(KEY_LAST, doc.name);
-    hardFocusEditor();
-    return true;
-  };
+  // --- Modals ---
+  const showModal = (el) => { el.classList.add("show"); el.setAttribute("aria-hidden","false"); };
+  const hideModal = (el) => { el.classList.remove("show"); el.setAttribute("aria-hidden","true"); };
 
-  // --- Modal helpers (no overlay when hidden) ---
-  const showModal = (el) => {
-    el.classList.add("show");
-    el.setAttribute("aria-hidden", "false");
-  };
-  const hideModal = (el) => {
-    el.classList.remove("show");
-    el.setAttribute("aria-hidden", "true");
-  };
-
-  // close modal on backdrop tap
   [openModal, trashModal].forEach(mod => {
-    mod.addEventListener("click", (e) => {
-      if (e.target === mod) hideModal(mod);
-    });
+    mod.addEventListener("click", (e) => { if (e.target === mod) hideModal(mod); });
   });
 
-  // --- Render lists ---
   const renderDocs = () => {
     const docs = getDocs();
     docList.innerHTML = "";
-    if (docs.length === 0){
+    if (!docs.length){
       docList.innerHTML = `<div class="row"><div class="meta"><div class="name">Nessun documento</div><div class="date">Salva un documento per vederlo qui.</div></div></div>`;
       return;
     }
-
     for (const d of docs){
       const row = document.createElement("div");
       row.className = "row";
@@ -682,21 +594,16 @@
       `;
       docList.appendChild(row);
     }
-
-    // Delegation click
     docList.querySelectorAll("[data-open]").forEach(b => {
       b.addEventListener("click", () => {
-        const name = b.getAttribute("data-open");
-        openDocByName(name);
+        openDocByName(b.getAttribute("data-open"));
         hideModal(openModal);
         showToast("Documento aperto");
       });
     });
     docList.querySelectorAll("[data-trash]").forEach(b => {
       b.addEventListener("click", () => {
-        const name = b.getAttribute("data-trash");
-        const ok = moveToTrash(name);
-        if (ok){
+        if (moveToTrash(b.getAttribute("data-trash"))){
           renderDocs();
           showToast("Spostato nel cestino");
         }
@@ -707,15 +614,41 @@
   const renderTrash = () => {
     const items = getTrash();
     trashList.innerHTML = "";
-    if (items.length === 0){
+    if (!items.length){
       trashList.innerHTML = `<div class="row"><div class="meta"><div class="name">Cestino vuoto</div><div class="date">Nessun elemento eliminato.</div></div></div>`;
       return;
     }
-
     for (const d of items){
       const row = document.createElement("div");
       row.className = "row";
       row.innerHTML = `
         <div class="meta">
           <div class="name">${escapeHTML(d.name)}</div>
-          <div class="date">Eliminato: ${escapeHTML(fmtDate(d.deletedAt |
+          <div class="date">Eliminato: ${escapeHTML(fmtDate(d.deletedAt || d.updatedAt))}</div>
+        </div>
+        <div class="actions">
+          <button class="btn small" data-restore="${escapeAttr(d.name)}" type="button">Ripristina</button>
+          <button class="btn small danger" data-delete="${escapeAttr(d.name)}" type="button">Elimina</button>
+        </div>
+      `;
+      trashList.appendChild(row);
+    }
+    trashList.querySelectorAll("[data-restore]").forEach(b => {
+      b.addEventListener("click", () => {
+        if (restoreFromTrash(b.getAttribute("data-restore"))){
+          renderTrash();
+          showToast("Ripristinato");
+        }
+      });
+    });
+    trashList.querySelectorAll("[data-delete]").forEach(b => {
+      b.addEventListener("click", () => {
+        if (deleteForever(b.getAttribute("data-delete"))){
+          renderTrash();
+          showToast("Eliminato definitivamente");
+        }
+      });
+    });
+  };
+
+  // -
