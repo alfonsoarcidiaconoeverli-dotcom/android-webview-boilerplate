@@ -9,86 +9,59 @@
   <style>
     :root{
       --bg:#ffffff;
-      --panel:#ffffff;
       --soft:#f6f7f9;
       --line:#e6e6e6;
-      --muted:#6b7280;
       --text:#111827;
+      --muted:#6b7280;
       --primary:#2563eb;
       --danger:#dc2626;
 
-      --shadow:0 10px 26px rgba(0,0,0,.06);
-      --shadow2:0 4px 14px rgba(0,0,0,.05);
-
       --safeTop: env(safe-area-inset-top, 0px);
       --safeBot: env(safe-area-inset-bottom, 0px);
-
-      /* banner fisso (admob) */
       --bannerH: 60px;
 
-      /* piccolo padding extra quando appare la tastiera (best-effort) */
-      --kbPad: 0px;
+      --shadow:0 10px 26px rgba(0,0,0,.08);
+      --shadow2:0 4px 14px rgba(0,0,0,.06);
     }
 
     *{ box-sizing:border-box; }
     html,body{ height:100%; }
     body{
       margin:0;
-      background:var(--bg);
+      background:var(--soft);
       color:var(--text);
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
       -webkit-font-smoothing:antialiased;
-      overscroll-behavior:none;
-      touch-action: manipulation;
     }
 
-    .app{
-      min-height:100%;
-      display:flex;
-      flex-direction:column;
-      background:var(--bg);
-    }
-
-    /* TOPBAR: solo brand + nome doc */
-    .topbar{
-      position:sticky;
-      top:0;
-      z-index:50;
-      background:var(--panel);
+    /* Header semplice (solo titolo + nome file) */
+    .top{
+      background:#fff;
       border-bottom:1px solid var(--line);
       padding: calc(10px + var(--safeTop)) 12px 10px;
     }
-    .topbar-inner{
+    .top-inner{
       max-width:1100px;
       margin:0 auto;
       display:flex;
       align-items:center;
       gap:12px;
     }
-    .brand{
-      display:flex; align-items:center; gap:10px;
-      user-select:none;
-      min-width:0;
-    }
     .logo{
       width:34px;height:34px;border-radius:10px;
       background:var(--primary);
+      color:#fff;
       display:grid;place-items:center;
-      color:#fff;font-weight:900;
+      font-weight:900;
       box-shadow: var(--shadow2);
       flex:0 0 auto;
     }
-    .brand-text{ line-height:1.1; min-width:0; }
-    .brand-text .title{ font-size:16px; font-weight:900; }
-    .brand-text .sub{ font-size:12px; color:var(--muted); font-weight:700; }
+    .brand{ line-height:1.1; }
+    .brand .t{ font-weight:900; font-size:16px; }
+    .brand .s{ font-weight:700; font-size:12px; color:var(--muted); }
 
-    .nameWrap{
-      flex:1;
-      display:flex;
-      justify-content:flex-end;
-      min-width:0;
-    }
-    .filename{
+    .fileName{
+      margin-left:auto;
       width:min(420px, 100%);
       height:42px;
       border:1px solid var(--line);
@@ -97,139 +70,27 @@
       font-size:14px;
       outline:none;
       background:#fff;
-      box-shadow: inset 0 1px 0 rgba(0,0,0,.02);
     }
-    .filename:focus{
-      border-color: rgba(37,99,235,.45);
-      box-shadow: 0 0 0 4px rgba(37,99,235,.12);
-    }
-
-    /* TOOLBAR (compatta, cliccabile) */
-    .toolbarWrap{
-      position:sticky;
-      top: calc(62px + var(--safeTop));
-      z-index:45;
-      background: var(--soft);
-      border-bottom:1px solid var(--line);
-    }
-    .toolbar{
-      max-width:1100px;
-      margin:0 auto;
-      padding:10px 12px;
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-    }
-
-    .group{
-      background:#fff;
-      border:1px solid var(--line);
-      border-radius:18px;
-      padding:10px;
-      box-shadow: var(--shadow2);
-    }
-
-    /* griglia compatta per non occupare metà schermo */
-    .rowGrid{
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-      align-items:center;
-    }
-
-    .btn{
-      height:42px;
-      border-radius:999px;
-      border:1px solid var(--line);
-      background:#fff;
-      padding:0 14px;
-      font-weight:900;
-      font-size:14px;
-      color:#111827;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      cursor:pointer;
-      user-select:none;
-      -webkit-tap-highlight-color: transparent;
-      touch-action: manipulation;
-    }
-    .btn:active{ transform:translateY(1px); }
-    .btn.primary{ background:var(--primary); border-color:var(--primary); color:#fff; }
-    .btn.danger{ border-color: rgba(220,38,38,.35); color:var(--danger); }
-
-    .chip{
-      height:38px;
-      border-radius:12px;
-      border:1px solid var(--line);
-      background:#fff;
-      padding:0 12px;
-      font-weight:900;
-      cursor:pointer;
-      -webkit-tap-highlight-color: transparent;
-      touch-action: manipulation;
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      user-select:none;
-      color:#111827;
-      font-size:14px;
-    }
-    .chip:active{ transform:translateY(1px); }
-
-    .colorbox{
-      width:28px;height:28px;border-radius:10px;
-      border:1px solid var(--line);
-      background:#111827;
-      display:inline-block;
-    }
-
-    input[type="color"]{
-      width:44px;height:38px;
-      border:none;
-      background:transparent;
-      padding:0;
-      touch-action: manipulation;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    .select{
-      height:38px;
-      border-radius:12px;
-      border:1px solid var(--line);
-      background:#fff;
-      padding:0 12px;
-      font-weight:900;
-      font-size:14px;
-      color:#111827;
-      outline:none;
-      touch-action: manipulation;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .select:focus{
+    .fileName:focus{
       border-color: rgba(37,99,235,.45);
       box-shadow: 0 0 0 4px rgba(37,99,235,.10);
     }
 
-    /* CONTENT */
-    .content{
-      flex:1;
-      display:flex;
-      justify-content:center;
-      background:var(--soft);
-      padding: 10px 12px calc(16px + var(--safeBot) + var(--bannerH) + var(--kbPad));
+    /* Editor prende quasi tutto lo schermo */
+    .wrap{
+      max-width:1100px;
+      margin: 10px auto 0;
+      padding: 0 12px calc(12px + var(--bannerH) + var(--safeBot));
     }
     .page{
-      width:100%;
-      max-width:1100px;
       background:#fff;
       border:1px solid var(--line);
       border-radius:18px;
       box-shadow: var(--shadow);
       overflow:hidden;
+      min-height: calc(100vh - 120px - var(--bannerH) - var(--safeBot));
       display:flex;
       flex-direction:column;
-      min-height: 55vh;
     }
     .ruler{
       height:34px;
@@ -240,61 +101,124 @@
     }
     .editor{
       flex:1;
-      padding:16px 16px 26px;
+      padding:16px 16px 28px;
       outline:none;
       font-size:16px;
       line-height:1.55;
-      color:var(--text);
-      word-wrap: break-word;
       overflow:auto;
-      -webkit-overflow-scrolling: touch;
-      touch-action: manipulation;
-      user-select:text;
+      -webkit-overflow-scrolling:touch;
     }
     .editor:empty:before{
       content:"Inizia a scrivere…";
       color:#9ca3af;
     }
 
-    /* MODALI */
-    .modalBack{
+    /* Pulsante MENU flottante */
+    .fab{
+      position:fixed;
+      right:14px;
+      bottom: calc(14px + var(--bannerH) + var(--safeBot));
+      z-index:50;
+      height:54px;
+      min-width:54px;
+      padding:0 18px;
+      border:none;
+      border-radius:999px;
+      background:var(--primary);
+      color:#fff;
+      font-weight:900;
+      box-shadow: var(--shadow);
+      cursor:pointer;
+    }
+    .fab:active{ transform: translateY(1px); }
+
+    /* Pannello comandi (modal) */
+    .back{
       position:fixed;
       inset:0;
-      background: rgba(0,0,0,.24);
+      background: rgba(0,0,0,.28);
       display:none;
       align-items:flex-end;
       justify-content:center;
-      padding: 18px 12px calc(18px + var(--safeBot) + var(--bannerH));
-      z-index:80;
+      padding: 12px 12px calc(12px + var(--bannerH) + var(--safeBot));
+      z-index:60;
     }
-    .modalBack.show{ display:flex; }
-    .modal{
-      width:min(680px, 100%);
+    .back.show{ display:flex; }
+
+    .panel{
+      width:min(720px, 100%);
       background:#fff;
       border:1px solid var(--line);
       border-radius:18px;
       box-shadow: var(--shadow);
       overflow:hidden;
     }
-    .modalHead{
-      padding:14px 14px 10px;
+    .ph{
+      padding:12px 12px 10px;
       border-bottom:1px solid var(--line);
       display:flex;
       align-items:center;
       justify-content:space-between;
       gap:10px;
     }
-    .modalHead .h{ font-weight:900; font-size:16px; }
-    .modalBody{ padding:12px 14px 14px; }
-    .hint{ font-size:13px; color:var(--muted); font-weight:650; margin:0 0 10px; }
+    .ph .h{ font-weight:900; }
+    .btn{
+      height:40px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:#fff;
+      padding:0 14px;
+      font-weight:900;
+      cursor:pointer;
+    }
+    .btn.primary{ background:var(--primary); border-color:var(--primary); color:#fff; }
+    .btn.danger{ border-color: rgba(220,38,38,.35); color:var(--danger); }
 
-    .list{
+    .pb{
+      padding:12px;
       display:flex;
       flex-direction:column;
+      gap:12px;
+    }
+    .grid{
+      display:flex;
+      flex-wrap:wrap;
       gap:10px;
-      max-height: 45vh;
-      overflow:auto;
-      -webkit-overflow-scrolling: touch;
+      align-items:center;
+    }
+    .select{
+      height:40px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:#fff;
+      padding:0 12px;
+      font-weight:900;
+      outline:none;
+    }
+    .chip{
+      height:40px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:#fff;
+      padding:0 12px;
+      font-weight:900;
+      cursor:pointer;
+    }
+    input[type="color"]{
+      width:44px;height:40px;
+      border:none;background:transparent;padding:0;
+    }
+    .colorbox{
+      width:26px;height:26px;border-radius:10px;border:1px solid var(--line);
+      background:#111827; display:inline-block; vertical-align:middle;
+      margin-right:8px;
+    }
+
+    /* liste modali */
+    .list{
+      display:flex; flex-direction:column; gap:10px;
+      max-height: 42vh; overflow:auto;
+      -webkit-overflow-scrolling:touch;
     }
     .row{
       border:1px solid var(--line);
@@ -304,23 +228,21 @@
       align-items:center;
       justify-content:space-between;
       gap:10px;
-      background:#fff;
     }
-    .row .meta{ min-width:0; display:flex; flex-direction:column; gap:4px; }
-    .row .name{ font-weight:900; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    .row .date{ font-size:12px; color:var(--muted); font-weight:700; }
-    .row .actions{ display:flex; gap:8px; flex:0 0 auto; }
-    .small{ height:38px; padding:0 12px; font-size:13px; }
+    .meta{ min-width:0; }
+    .name{ font-weight:900; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .date{ font-size:12px; color:var(--muted); font-weight:700; }
+    .actions{ display:flex; gap:8px; }
 
-    /* TOAST */
-    .status{
+    /* Toast */
+    .toastWrap{
       position:fixed;
       left:12px; right:12px;
-      bottom: calc(12px + var(--safeBot) + var(--bannerH));
+      bottom: calc(12px + var(--bannerH) + var(--safeBot));
+      z-index:70;
+      pointer-events:none;
       display:flex;
       justify-content:center;
-      pointer-events:none;
-      z-index:90;
     }
     .toast{
       background:#111827;
@@ -328,29 +250,27 @@
       padding:10px 14px;
       border-radius:999px;
       font-weight:900;
-      font-size:13px;
-      box-shadow: var(--shadow);
       opacity:0;
-      transform: translateY(10px);
-      transition:.25s ease;
-      max-width:min(640px, 100%);
+      transform:translateY(10px);
+      transition:.2s ease;
+      max-width:min(640px,100%);
       text-align:center;
     }
     .toast.show{ opacity:1; transform:translateY(0); }
 
-    /* BANNER ADMOB PLACEHOLDER */
+    /* Banner AdMob placeholder fisso */
     .admobBar{
       position:fixed;
       left:0; right:0;
       bottom:0;
       height: calc(var(--bannerH) + var(--safeBot));
-      background:#ffffff;
+      background:#fff;
       border-top:1px solid var(--line);
       display:flex;
       align-items:center;
       justify-content:center;
       padding-bottom: var(--safeBot);
-      z-index:70;
+      z-index:40;
     }
     .admobInner{
       width:min(480px, 100%);
@@ -367,127 +287,103 @@
     }
 
     @media print{
-      .topbar, .toolbarWrap, .ruler, .status, .admobBar { display:none !important; }
-      .content{ padding:0 !important; background:#fff !important; }
-      .page{ border:none !important; box-shadow:none !important; border-radius:0 !important; }
+      .top, .fab, .admobBar, .toastWrap { display:none !important; }
+      body{ background:#fff !important; }
+      .wrap{ padding:0 !important; margin:0 !important; max-width:none !important; }
+      .page{ border:none !important; box-shadow:none !important; border-radius:0 !important; min-height:auto !important; }
+      .ruler{ display:none !important; }
       .editor{ padding:0 !important; }
     }
   </style>
 </head>
 
 <body>
-  <div class="app">
-    <header class="topbar">
-      <div class="topbar-inner">
-        <div class="brand">
-          <div class="logo">W</div>
-          <div class="brand-text">
-            <div class="title">WordStudio</div>
-            <div class="sub">stile Word • offline</div>
-          </div>
-        </div>
-
-        <div class="nameWrap">
-          <input id="fileName" class="filename" type="text" value="Documento" autocomplete="off" />
-        </div>
+  <header class="top">
+    <div class="top-inner">
+      <div class="logo">W</div>
+      <div class="brand">
+        <div class="t">WordStudio</div>
+        <div class="s">stile Word • offline</div>
       </div>
-    </header>
+      <input id="fileName" class="fileName" type="text" value="Documento" autocomplete="off" />
+    </div>
+  </header>
 
-    <!-- TOOLBAR compatta (file+formattazione) -->
-    <div class="toolbarWrap">
-      <div class="toolbar">
-        <div class="group" aria-label="Comandi">
-          <div class="rowGrid" aria-label="File">
-            <button class="btn primary" id="btnSave" type="button">Salva</button>
-            <button class="btn" id="btnSaveAs" type="button">Salva con nome</button>
-            <button class="btn" id="btnPrint" type="button">Stampa</button>
-            <button class="btn danger" id="btnTrash" type="button">Cestino</button>
-            <button class="btn" id="btnOpen" type="button">Apri</button>
-          </div>
+  <main class="wrap">
+    <section class="page">
+      <div class="ruler"></div>
+      <div id="editor" class="editor" contenteditable="true" spellcheck="true"></div>
+    </section>
+  </main>
 
-          <div class="rowGrid" aria-label="Formattazione" style="margin-top:10px;">
-            <span class="chip" id="btnColor" role="button" aria-label="Colore testo">
-              <span class="colorbox" id="colorBox"></span>
-              <span>Colore</span>
-            </span>
-            <input id="colorPicker" type="color" value="#111827" aria-label="Scegli colore" />
+  <button id="btnMenu" class="fab" type="button">Menu</button>
 
-            <select id="fontFamily" class="select" aria-label="Tipo carattere">
-              <option value="">Predefinito</option>
-              <option value="Calibri, Arial, sans-serif">Calibri</option>
-              <option value="Times New Roman, Times, serif">Times New Roman</option>
-              <option value="Arial, Helvetica, sans-serif">Arial</option>
-              <option value="Georgia, serif">Georgia</option>
-              <option value="Verdana, Geneva, sans-serif">Verdana</option>
-              <option value="Courier New, Courier, monospace">Courier New</option>
-            </select>
+  <!-- Modal comandi -->
+  <div id="menuBack" class="back" aria-hidden="true">
+    <div class="panel" role="dialog" aria-modal="true" aria-label="Comandi">
+      <div class="ph">
+        <div class="h">Comandi</div>
+        <button id="btnCloseMenu" class="btn" type="button">Chiudi</button>
+      </div>
+      <div class="pb">
+        <div class="grid" aria-label="File">
+          <button class="btn primary" id="btnSave" type="button">Salva</button>
+          <button class="btn" id="btnSaveAs" type="button">Salva con nome</button>
+          <button class="btn" id="btnOpen" type="button">Apri</button>
+          <button class="btn" id="btnPrint" type="button">Stampa</button>
+          <button class="btn danger" id="btnTrash" type="button">Cestino</button>
+        </div>
 
-            <select id="fontSize" class="select" aria-label="Dimensione">
-              <option value="12">12</option>
-              <option value="14">14</option>
-              <option value="16" selected>16</option>
-              <option value="18">18</option>
-              <option value="20">20</option>
-              <option value="24">24</option>
-              <option value="28">28</option>
-              <option value="32">32</option>
-            </select>
+        <div class="grid" aria-label="Formattazione">
+          <span><span class="colorbox" id="colorBox"></span></span>
+          <input id="colorPicker" type="color" value="#111827" aria-label="Colore testo" />
 
-            <button class="chip" id="btnBold" type="button"><b>B</b></button>
-            <button class="chip" id="btnItalic" type="button"><i>I</i></button>
-            <button class="chip" id="btnUnderline" type="button"><u>U</u></button>
-            <button class="chip" id="btnStrike" type="button"><span style="text-decoration:line-through;font-weight:900;">S</span></button>
+          <select id="fontFamily" class="select" aria-label="Tipo carattere">
+            <option value="">Predefinito</option>
+            <option value="Calibri, Arial, sans-serif">Calibri</option>
+            <option value="Times New Roman, Times, serif">Times New Roman</option>
+            <option value="Arial, Helvetica, sans-serif">Arial</option>
+            <option value="Georgia, serif">Georgia</option>
+            <option value="Verdana, Geneva, sans-serif">Verdana</option>
+            <option value="Courier New, Courier, monospace">Courier New</option>
+          </select>
 
-            <button class="chip" id="btnH" type="button">Titolo</button>
-            <button class="chip" id="btnP" type="button">Paragrafo</button>
-            <button class="chip" id="btnBullets" type="button">• Elenco</button>
-          </div>
+          <select id="fontSize" class="select" aria-label="Dimensione">
+            <option value="12">12</option>
+            <option value="14">14</option>
+            <option value="16" selected>16</option>
+            <option value="18">18</option>
+            <option value="20">20</option>
+            <option value="24">24</option>
+            <option value="28">28</option>
+            <option value="32">32</option>
+          </select>
+
+          <button class="chip" id="btnBold" type="button"><b>B</b></button>
+          <button class="chip" id="btnItalic" type="button"><i>I</i></button>
+          <button class="chip" id="btnUnderline" type="button"><u>U</u></button>
+          <button class="chip" id="btnStrike" type="button"><span style="text-decoration:line-through;font-weight:900;">S</span></button>
+          <button class="chip" id="btnH" type="button">Titolo</button>
+          <button class="chip" id="btnP" type="button">Paragrafo</button>
+          <button class="chip" id="btnBullets" type="button">• Elenco</button>
+        </div>
+
+        <div id="openArea" style="display:none;">
+          <div style="font-weight:900;margin-bottom:8px;">Documenti</div>
+          <div id="docList" class="list"></div>
+        </div>
+
+        <div id="trashArea" style="display:none;">
+          <div style="font-weight:900;margin-bottom:8px;">Cestino</div>
+          <div id="trashList" class="list"></div>
         </div>
       </div>
     </div>
-
-    <main class="content">
-      <section class="page">
-        <div class="ruler"></div>
-        <div id="editor" class="editor" contenteditable="true" spellcheck="true"></div>
-      </section>
-    </main>
-
-    <!-- Modal Apri -->
-    <div class="modalBack" id="openModal" aria-hidden="true">
-      <div class="modal" role="dialog" aria-modal="true" aria-label="Apri documento">
-        <div class="modalHead">
-          <div class="h">Apri documento</div>
-          <button class="btn small" id="btnCloseOpen" type="button">Chiudi</button>
-        </div>
-        <div class="modalBody">
-          <p class="hint">I documenti vengono salvati offline su questo dispositivo.</p>
-          <div class="list" id="docList"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Modal Cestino -->
-    <div class="modalBack" id="trashModal" aria-hidden="true">
-      <div class="modal" role="dialog" aria-modal="true" aria-label="Cestino">
-        <div class="modalHead">
-          <div class="h">Cestino</div>
-          <button class="btn small" id="btnCloseTrash" type="button">Chiudi</button>
-        </div>
-        <div class="modalBody">
-          <p class="hint">Ripristina o elimina definitivamente.</p>
-          <div class="list" id="trashList"></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="status"><div class="toast" id="toast"></div></div>
   </div>
 
-  <!-- Banner AdMob placeholder fisso -->
-  <div class="admobBar" aria-label="Banner AdMob">
-    <div class="admobInner">Spazio banner AdMob</div>
-  </div>
+  <div class="toastWrap"><div id="toast" class="toast"></div></div>
+
+  <div class="admobBar"><div class="admobInner">Spazio banner AdMob</div></div>
 
 <script>
 (() => {
@@ -498,22 +394,25 @@
   const fileName = $("fileName");
   const toast = $("toast");
 
+  const menuBack = $("menuBack");
+  const btnMenu = $("btnMenu");
+  const btnCloseMenu = $("btnCloseMenu");
+
   const btnSave = $("btnSave");
   const btnSaveAs = $("btnSaveAs");
   const btnOpen = $("btnOpen");
   const btnPrint = $("btnPrint");
   const btnTrash = $("btnTrash");
 
-  const openModal = $("openModal");
-  const trashModal = $("trashModal");
-  const btnCloseOpen = $("btnCloseOpen");
-  const btnCloseTrash = $("btnCloseTrash");
+  const openArea = $("openArea");
+  const trashArea = $("trashArea");
   const docList = $("docList");
   const trashList = $("trashList");
 
   const colorPicker = $("colorPicker");
   const colorBox = $("colorBox");
-  const btnColor = $("btnColor");
+  const fontFamily = $("fontFamily");
+  const fontSize = $("fontSize");
 
   const btnBold = $("btnBold");
   const btnItalic = $("btnItalic");
@@ -523,54 +422,15 @@
   const btnP = $("btnP");
   const btnBullets = $("btnBullets");
 
-  const fontFamily = $("fontFamily");
-  const fontSize = $("fontSize");
+  const KEY_DOCS = "wordstudio_docs_v5";
+  const KEY_TRASH = "wordstudio_trash_v5";
+  const KEY_LAST = "wordstudio_last_open_v5";
 
-  const KEY_DOCS = "wordstudio_docs_v4";
-  const KEY_TRASH = "wordstudio_trash_v4";
-  const KEY_LAST = "wordstudio_last_open_v4";
-
-  // ✅ tap super-robusto (WebView)
-  const bindTap = (el, fn) => {
-    if (!el) return;
-    const h = (e) => {
-      try{
-        e.preventDefault();
-        e.stopPropagation();
-      }catch(_){}
-      fn(e);
-      return false;
-    };
-    el.addEventListener("touchend", h, { passive:false });
-    el.addEventListener("pointerup", h, { passive:false });
-    el.addEventListener("click", h, { passive:false });
-  };
-
-  // Focus editor
-  const hardFocusEditor = () => {
-    editor.focus({ preventScroll:true });
-    try{
-      const sel = window.getSelection();
-      if (!sel) return;
-      if (sel.rangeCount === 0) {
-        const r = document.createRange();
-        r.selectNodeContents(editor);
-        r.collapse(false);
-        sel.removeAllRanges();
-        sel.addRange(r);
-      }
-    }catch(e){}
-  };
-
-  bindTap(editor, () => hardFocusEditor());
-
-  // Toast
-  let toastTimer = null;
   const showToast = (msg) => {
     toast.textContent = msg;
     toast.classList.add("show");
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => toast.classList.remove("show"), 1400);
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(() => toast.classList.remove("show"), 1400);
   };
 
   const nowISO = () => new Date().toISOString();
@@ -581,94 +441,200 @@
     }catch(e){ return iso; }
   };
 
-  const loadJSON = (k, fallback) => {
-    try{
-      const v = localStorage.getItem(k);
-      return v ? JSON.parse(v) : fallback;
-    }catch(e){ return fallback; }
-  };
-  const saveJSON = (k, val) => localStorage.setItem(k, JSON.stringify(val));
+  const loadJSON = (k, fb) => { try{ const v=localStorage.getItem(k); return v?JSON.parse(v):fb; }catch(_){ return fb; } };
+  const saveJSON = (k, v) => localStorage.setItem(k, JSON.stringify(v));
 
-  const normalizeName = (name) => (name || "").trim().replace(/\s+/g, " ").slice(0, 60) || "Documento";
-  const getCurrentName = () => normalizeName(fileName.value);
+  const normalizeName = (n) => (n||"").trim().replace(/\s+/g," ").slice(0,60) || "Documento";
+  const getName = () => normalizeName(fileName.value);
   const getHTML = () => editor.innerHTML || "";
   const setHTML = (html) => { editor.innerHTML = html || "<p></p>"; };
 
-  // execCommand helper
-  const exec = (cmd, val=null) => {
-    hardFocusEditor();
-    try{ document.execCommand("styleWithCSS", false, true); }catch(e){}
-    try{ document.execCommand(cmd, false, val); }catch(e){}
-  };
-
-  // Docs storage
   const getDocs = () => loadJSON(KEY_DOCS, []);
-  const setDocs = (arr) => saveJSON(KEY_DOCS, arr);
+  const setDocs = (a) => saveJSON(KEY_DOCS, a);
   const getTrash = () => loadJSON(KEY_TRASH, []);
-  const setTrash = (arr) => saveJSON(KEY_TRASH, arr);
+  const setTrash = (a) => saveJSON(KEY_TRASH, a);
 
   const upsertDoc = (name, html) => {
     const docs = getDocs();
     const n = normalizeName(name);
-    const idx = docs.findIndex(d => d.name.toLowerCase() === n.toLowerCase());
-    const entry = { name:n, html, updatedAt: nowISO() };
-    if (idx >= 0) docs[idx] = entry; else docs.unshift(entry);
+    const i = docs.findIndex(d => d.name.toLowerCase() === n.toLowerCase());
+    const e = { name:n, html, updatedAt: nowISO() };
+    if (i>=0) docs[i]=e; else docs.unshift(e);
     setDocs(docs);
     localStorage.setItem(KEY_LAST, n);
-    return entry;
   };
 
   const openDocByName = (name) => {
     const n = normalizeName(name);
-    const doc = getDocs().find(d => d.name.toLowerCase() === n.toLowerCase());
-    if (!doc) return false;
-    fileName.value = doc.name;
-    setHTML(doc.html);
-    localStorage.setItem(KEY_LAST, doc.name);
-    setTimeout(hardFocusEditor, 60);
+    const d = getDocs().find(x => x.name.toLowerCase() === n.toLowerCase());
+    if (!d) return false;
+    fileName.value = d.name;
+    setHTML(d.html);
+    localStorage.setItem(KEY_LAST, d.name);
+    setTimeout(() => editor.focus(), 50);
     return true;
   };
 
   const moveToTrash = (name) => {
     const n = normalizeName(name);
     const docs = getDocs();
-    const idx = docs.findIndex(d => d.name.toLowerCase() === n.toLowerCase());
-    if (idx < 0) return false;
-    const [removed] = docs.splice(idx, 1);
+    const i = docs.findIndex(d => d.name.toLowerCase() === n.toLowerCase());
+    if (i<0) return false;
+    const [rm] = docs.splice(i,1);
     setDocs(docs);
-
-    const trash = getTrash();
-    trash.unshift({ ...removed, deletedAt: nowISO() });
-    setTrash(trash);
+    const tr = getTrash();
+    tr.unshift({ ...rm, deletedAt: nowISO() });
+    setTrash(tr);
     return true;
   };
 
   const restoreFromTrash = (name) => {
     const n = normalizeName(name);
-    const trash = getTrash();
-    const idx = trash.findIndex(d => d.name.toLowerCase() === n.toLowerCase());
-    if (idx < 0) return false;
-    const [rest] = trash.splice(idx, 1);
-    setTrash(trash);
-    upsertDoc(rest.name, rest.html);
+    const tr = getTrash();
+    const i = tr.findIndex(d => d.name.toLowerCase() === n.toLowerCase());
+    if (i<0) return false;
+    const [it] = tr.splice(i,1);
+    setTrash(tr);
+    upsertDoc(it.name, it.html);
     return true;
   };
 
   const deleteForever = (name) => {
     const n = normalizeName(name);
-    const trash = getTrash();
-    const idx = trash.findIndex(d => d.name.toLowerCase() === n.toLowerCase());
-    if (idx < 0) return false;
-    trash.splice(idx, 1);
-    setTrash(trash);
+    const tr = getTrash();
+    const i = tr.findIndex(d => d.name.toLowerCase() === n.toLowerCase());
+    if (i<0) return false;
+    tr.splice(i,1);
+    setTrash(tr);
     return true;
   };
 
-  const escapeHTML = (str) => String(str).replace(/[&<>"']/g, s => ({
-    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
-  }[s]));
-  const escapeAttr = (str) => String(str).replace(/"/g, "&quot;");
+  const escapeHTML = (s) => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+  const escapeAttr = (s) => String(s).replace(/"/g,"&quot;");
 
-  // Modals
-  const showModal = (el) => { el.classList.add("show"); el.setAttribute("aria-hidden","false"); };
-  const hideModal = (el) 
+  // Modal menu
+  const openMenu = () => { menuBack.classList.add("show"); menuBack.setAttribute("aria-hidden","false"); };
+  const closeMenu = () => { menuBack.classList.remove("show"); menuBack.setAttribute("aria-hidden","true"); openArea.style.display="none"; trashArea.style.display="none"; };
+
+  btnMenu.onclick = openMenu;
+  btnCloseMenu.onclick = closeMenu;
+  menuBack.addEventListener("click", (e) => { if (e.target === menuBack) closeMenu(); });
+
+  // execCommand
+  const exec = (cmd, val=null) => {
+    editor.focus();
+    try{ document.execCommand("styleWithCSS", false, true); }catch(_){}
+    try{ document.execCommand(cmd, false, val); }catch(_){}
+  };
+
+  // Colore
+  const applyColor = (hex) => {
+    colorBox.style.background = hex;
+    exec("foreColor", hex);
+  };
+  colorPicker.addEventListener("input", () => applyColor(colorPicker.value));
+
+  // Font family
+  fontFamily.addEventListener("change", () => {
+    editor.focus();
+    if (fontFamily.value) exec("fontName", fontFamily.value);
+    showToast("Font applicato");
+  });
+
+  // Dimensione px: su selezione usa span, altrimenti set base editor
+  const applyFontSizePx = (px) => {
+    editor.focus();
+    const sel = window.getSelection();
+    if (sel && sel.rangeCount){
+      const r = sel.getRangeAt(0);
+      if (!r.collapsed){
+        try{
+          const span = document.createElement("span");
+          span.style.fontSize = px + "px";
+          r.surroundContents(span);
+          return;
+        }catch(_){}
+      }
+    }
+    editor.style.fontSize = px + "px";
+  };
+
+  fontSize.addEventListener("change", () => {
+    const px = parseInt(fontSize.value, 10);
+    if (!isNaN(px)) applyFontSizePx(px);
+    showToast("Dimensione " + fontSize.value);
+  });
+
+  // Formattazione
+  btnBold.onclick = () => exec("bold");
+  btnItalic.onclick = () => exec("italic");
+  btnUnderline.onclick = () => exec("underline");
+  btnStrike.onclick = () => exec("strikeThrough");
+  btnH.onclick = () => exec("formatBlock","h1");
+  btnP.onclick = () => exec("formatBlock","p");
+  btnBullets.onclick = () => exec("insertUnorderedList");
+
+  // Render liste
+  const renderDocs = () => {
+    const docs = getDocs();
+    docList.innerHTML = "";
+    if (!docs.length){
+      docList.innerHTML = `<div class="row"><div class="meta"><div class="name">Nessun documento</div><div class="date">Salva un documento per vederlo qui.</div></div></div>`;
+      return;
+    }
+    for (const d of docs){
+      const row = document.createElement("div");
+      row.className = "row";
+      row.innerHTML = `
+        <div class="meta">
+          <div class="name">${escapeHTML(d.name)}</div>
+          <div class="date">Aggiornato: ${escapeHTML(fmtDate(d.updatedAt))}</div>
+        </div>
+        <div class="actions">
+          <button class="btn primary" data-open="${escapeAttr(d.name)}">Apri</button>
+          <button class="btn danger" data-trash="${escapeAttr(d.name)}">Elimina</button>
+        </div>
+      `;
+      docList.appendChild(row);
+    }
+    docList.querySelectorAll("[data-open]").forEach(b=>{
+      b.onclick = () => {
+        openDocByName(b.getAttribute("data-open"));
+        closeMenu();
+        showToast("Documento aperto");
+      };
+    });
+    docList.querySelectorAll("[data-trash]").forEach(b=>{
+      b.onclick = () => {
+        if (moveToTrash(b.getAttribute("data-trash"))){
+          renderDocs();
+          showToast("Spostato nel cestino");
+        }
+      };
+    });
+  };
+
+  const renderTrash = () => {
+    const items = getTrash();
+    trashList.innerHTML = "";
+    if (!items.length){
+      trashList.innerHTML = `<div class="row"><div class="meta"><div class="name">Cestino vuoto</div><div class="date">Nessun elemento eliminato.</div></div></div>`;
+      return;
+    }
+    for (const d of items){
+      const row = document.createElement("div");
+      row.className = "row";
+      row.innerHTML = `
+        <div class="meta">
+          <div class="name">${escapeHTML(d.name)}</div>
+          <div class="date">Eliminato: ${escapeHTML(fmtDate(d.deletedAt || d.updatedAt))}</div>
+        </div>
+        <div class="actions">
+          <button class="btn" data-restore="${escapeAttr(d.name)}">Ripristina</button>
+          <button class="btn danger" data-delete="${escapeAttr(d.name)}">Elimina</button>
+        </div>
+      `;
+      trashList.appendChild(row);
+    }
+    trashList.querySelectorAll("[data-restore]").forEach(b=>{
+  
